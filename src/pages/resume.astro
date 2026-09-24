@@ -1,0 +1,111 @@
+---
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import PlaceholderNote from '@/components/PlaceholderNote.astro';
+import Icon from '@/components/Icon.astro';
+import { site } from '@/config/site';
+import { withBase } from '@/lib/paths';
+
+const { pdf, updated } = site.resume;
+
+// Fail loudly rather than publish a broken download link.
+if (pdf && !existsSync(join(process.cwd(), 'public', pdf))) {
+  throw new Error(`site.resume.pdf is "${pdf}", but public${pdf} does not exist.`);
+}
+
+const pdfUrl = pdf ? withBase(pdf) : null;
+---
+
+<BaseLayout title="Resume" description={`Resume of ${site.name}.`}>
+  <PageHeader eyebrow="Resume" title="Resume">
+    {
+      pdfUrl && (
+        <div class="btn-row">
+          <a class="btn btn--primary" href={pdfUrl} download>
+            <Icon name="download" />
+            Download PDF
+          </a>
+          <a class="btn btn--ghost" href={pdfUrl} target="_blank" rel="noopener">
+            <Icon name="external" />
+            Open in new tab
+          </a>
+        </div>
+      )
+    }
+    {updated && <p class="resume-updated">Last updated {updated}</p>}
+  </PageHeader>
+
+  <section class="section surface-light">
+    <div class="container">
+      {
+        pdfUrl ? (
+          <div class="resume-viewer">
+            <object data={pdfUrl} type="application/pdf" title={`${site.name} resume (PDF)`}>
+              <p class="resume-fallback">
+                Your browser can’t display the PDF here.{' '}
+                <a href={pdfUrl} download>
+                  Download the resume
+                </a>{' '}
+                instead.
+              </p>
+            </object>
+          </div>
+        ) : (
+          <div class="resume-placeholder">
+            <PlaceholderNote label="Placeholder" title="Resume coming soon">
+              <p>A resume has not been added yet. When it is ready, place the PDF in <code>public/resume/</code> and set <code>resume.pdf</code> in <code>src/config/site.ts</code>. This page will then show an inline viewer and a download button.</p>
+            </PlaceholderNote>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .resume-updated {
+    font-size: var(--text-sm);
+    color: var(--on-dark-muted);
+  }
+
+  .resume-viewer {
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--white);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .resume-viewer object {
+    display: block;
+    width: 100%;
+    height: min(85vh, 70rem);
+  }
+
+  /* Phones rarely render inline PDFs well: rely on the download/open buttons. */
+  @media (max-width: 40rem) {
+    .resume-viewer object {
+      height: 70vh;
+    }
+  }
+
+  .resume-fallback {
+    padding: var(--space-6);
+  }
+
+  .resume-fallback a {
+    color: var(--accent-strong);
+    font-weight: 600;
+  }
+
+  .resume-placeholder {
+    max-width: 40rem;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+</style>

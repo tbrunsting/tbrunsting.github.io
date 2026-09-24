@@ -1,0 +1,53 @@
+# Deploy to GitHub Pages — PREPARED, NOT ACTIVE.
+#
+# This workflow does nothing on its own:
+#   • The site has no GitHub remote, so this file never reaches GitHub until you push.
+#   • Even after pushing, it only runs when started by hand (workflow_dispatch).
+#   • GitHub Pages must also be enabled in the repository settings.
+#
+# To switch on automatic deploys later, uncomment the `push:` trigger below.
+# Step-by-step instructions: docs/DEPLOYMENT.md
+
+name: Deploy to GitHub Pages
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Build with Astro
+        uses: withastro/action@v6
+        env:
+          # Set these as repository *variables* (Settings → Secrets and variables → Actions → Variables).
+          # SITE_URL: e.g. https://tbrunsting.com once the domain is owned and configured,
+          #           or https://<username>.github.io before that.
+          # BASE_PATH: '/' for a custom domain; '/<repo-name>' for https://<username>.github.io/<repo-name>/
+          SITE_URL: ${{ vars.SITE_URL }}
+          BASE_PATH: ${{ vars.BASE_PATH || '/' }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

@@ -1,0 +1,70 @@
+---
+title: Transfer Market Efficiency
+sport: European Soccer
+category: Transfer market
+timePeriod: 2017/18–2023/24
+summary: >-
+  Seven seasons of transfer activity across the Premier League, La Liga, Serie A, the
+  Bundesliga and Ligue 1, scored club by club for how much on-field value the spending bought.
+question: >-
+  Which clubs in Europe's top five leagues extract the most on-field value per euro spent in
+  the transfer market, which burn the most money for the least return, and — over seven
+  seasons — which clubs actually got smarter?
+featured: true
+status: in-progress
+tools:
+  - Python
+  - PostgreSQL
+  - R
+  - Power BI
+# Scope figures only — verified against the project repository's documentation
+# (README, docs/phase-1-summary.md, docs/phase-1-data-coverage.md). No findings.
+stats:
+  - label: Leagues
+    value: '5'
+    note: Premier League, La Liga, Serie A, Bundesliga, Ligue 1
+  - label: Scored seasons
+    value: '7'
+    note: 2017/18 to 2023/24
+  - label: Clubs
+    value: '145'
+    note: Across the window, with promotion and relegation
+  - label: Club-seasons
+    value: '684'
+githubUrl: https://github.com/tbrunsting/Transfer-Market-Efficiency
+dashboard:
+  status: in-development
+# thumbnail, heroImage, dashboard.preview, dashboard.url, dashboard.embedUrl,
+# publishedAt and ogImage are intentionally omitted until real assets exist.
+---
+
+<PlaceholderNote label="Provisional introduction" title="The full case study is being written">
+  This page is an early version. The introduction below describes the project's question, scope and pipeline using details from the project repository. The findings, the finished dashboard and the long-form technical write-up will be added once they are ready.
+</PlaceholderNote>
+
+Every summer, clubs across Europe's top five leagues spend enormous sums moving players between one another. Most public coverage asks how much clubs spend. This project asks a different question: **did the spending work?**
+
+It scores every club in the Premier League, La Liga, Serie A, the Bundesliga and Ligue 1 across seven complete seasons, from 2017/18 to 2023/24. Efficiency is measured per club and per season rather than as a single seven-year average, so the analysis can show which clubs improved over time.
+
+<Callout type="decision" title="Why the scored window is 2017/18–2023/24">
+  The window starts with the first big-five season that has the advanced statistics the scoring depends on. It ends at 2023/24, the last season for which a complete copy of that data still exists after FBref's Opta-sourced advanced statistics were removed in January 2026. Later transfer windows are not scored.
+</Callout>
+
+## How the analysis is built
+
+The project runs as a reproducible pipeline, from frozen, checksummed source data to a Power BI dashboard. Each scoring step computed in R is recomputed independently in SQL, and a run fails unless the two agree.
+
+<DataPipeline
+  caption="Project pipeline, as documented in the repository."
+  steps={[
+    { label: 'Ingest & validate', detail: 'Frozen, checksummed sources and rule-based consistency checks', tools: ['Python'] },
+    { label: 'Warehouse', detail: 'Relational schema at one row per transfer event', tools: ['PostgreSQL'] },
+    { label: 'Score', detail: 'Player quality, pillar scores and a composite efficiency index', tools: ['R', 'SQL checks'] },
+    { label: 'Present', detail: 'Presentation views shaped for the dashboard', tools: ['SQL'] },
+    { label: 'Dashboard', detail: 'League-wide and club-level views, in development', tools: ['Power BI'] },
+  ]}
+/>
+
+<PlaceholderNote label="Placeholder" title="Long-form case study — coming soon">
+  The complete write-up will cover the data sources and their validation, position-adjusted player scoring, how the efficiency index is built, the findings, and the project's limitations. Until then, the full code and documentation are available on GitHub.
+</PlaceholderNote>

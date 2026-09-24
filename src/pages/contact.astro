@@ -1,0 +1,47 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import ProfileLinks from '@/components/ProfileLinks.astro';
+import { site } from '@/config/site';
+
+const missing = Object.values(site.links).some((v) => v === null);
+---
+
+<BaseLayout title="Contact" description={`How to get in touch with ${site.name}.`}>
+  <PageHeader
+    eyebrow="Contact"
+    title="Get in touch"
+    lede="Questions about a project, its data or its methods are always welcome. The best ways to reach me are below."
+  />
+
+  <section class="section surface-light">
+    <div class="container contact">
+      <ProfileLinks size="lg" />
+      {
+        missing && (
+          <p class="contact__note">
+            Links marked “To be added” will appear here once they are set in <code>src/config/site.ts</code>.
+          </p>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact {
+    max-width: calc(36rem + 2 * var(--gutter));
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .contact__note {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+
+  .contact__note code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+</style>

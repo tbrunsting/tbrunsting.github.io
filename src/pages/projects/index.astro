@@ -1,0 +1,68 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import ProjectGrid from '@/components/ProjectGrid.astro';
+import { getProjects } from '@/lib/projects';
+
+const projects = await getProjects();
+const sports = [...new Set(projects.map((p) => p.data.sport))];
+const countLabel = `${projects.length} ${projects.length === 1 ? 'project' : 'projects'}`;
+---
+
+<BaseLayout
+  title="Projects"
+  description="Sports analytics projects with dashboards and technical case studies."
+>
+  <PageHeader
+    eyebrow="Projects"
+    title="Analytical projects"
+    lede="Each project pairs a dashboard with a technical case study covering the data, the methods and the decisions behind the results."
+  />
+
+  <section class="section surface-light" aria-labelledby="project-list-title">
+    <div class="container">
+      <div class="list-head">
+        <h2 id="project-list-title" class="visually-hidden">All projects</h2>
+        <p class="list-head__count">{countLabel}</p>
+        {
+          sports.length > 0 && (
+            <ul class="list-head__sports" aria-label="Sports covered">
+              {sports.map((s) => (
+                <li class="badge">{s}</li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+
+      <ProjectGrid projects={projects} headingLevel="h3" />
+
+      {projects.length === 0 && <p class="muted">Projects will appear here once they are added.</p>}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .list-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .list-head__count {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--ink-muted);
+    margin-right: var(--space-2);
+  }
+
+  .list-head__sports {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+  }
+</style>

@@ -1,0 +1,132 @@
+---
+import { site } from '@/config/site';
+import { withBase } from '@/lib/paths';
+import Icon from './Icon.astro';
+
+const year = new Date().getFullYear();
+const { github, linkedin, email } = site.links;
+---
+
+<footer class="site-footer surface-darker">
+  <div class="container site-footer__inner">
+    <div class="site-footer__brand">
+      <a class="site-footer__name" href={withBase('/')}>{site.name}</a>
+      <p>Sports analytics projects across professional and collegiate sports.</p>
+    </div>
+
+    <nav aria-label="Footer">
+      <ul class="site-footer__links">
+        {
+          site.nav.map((item) => (
+            <li>
+              <a href={withBase(item.href)}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <ul class="site-footer__social" aria-label="Profiles">
+      {
+        github && (
+          <li>
+            <a href={github} rel="noopener" target="_blank">
+              <Icon name="github" />
+              <span>GitHub</span>
+            </a>
+          </li>
+        )
+      }
+      {
+        linkedin && (
+          <li>
+            <a href={linkedin} rel="noopener" target="_blank">
+              <Icon name="linkedin" />
+              <span>LinkedIn</span>
+            </a>
+          </li>
+        )
+      }
+      {
+        email && (
+          <li>
+            <a href={`mailto:${email}`}>
+              <Icon name="mail" />
+              <span>Email</span>
+            </a>
+          </li>
+        )
+      }
+    </ul>
+  </div>
+  <div class="container site-footer__base">
+    <p>© {year} {site.name}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--border-dark);
+    font-size: var(--text-sm);
+  }
+
+  .site-footer__inner {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 48rem) {
+    .site-footer__inner {
+      grid-template-columns: 2fr 1fr 1fr;
+    }
+  }
+
+  .site-footer__name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-decoration: none;
+  }
+
+  .site-footer__brand p {
+    margin-top: var(--space-2);
+    color: var(--on-dark-muted);
+    max-width: 28rem;
+  }
+
+  .site-footer ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+  }
+
+  .site-footer ul a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--on-dark-muted);
+    text-decoration: none;
+    transition: color var(--duration) var(--ease);
+  }
+
+  .site-footer ul a:hover {
+    color: var(--on-dark);
+  }
+
+  .site-footer ul svg {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  .site-footer__base {
+    margin-top: var(--space-7);
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--border-dark);
+    color: var(--on-dark-muted);
+    font-size: var(--text-xs);
+  }
+</style>

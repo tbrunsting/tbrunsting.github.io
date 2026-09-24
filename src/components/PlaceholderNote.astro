@@ -1,0 +1,56 @@
+---
+/**
+ * Clearly marked placeholder for content that has not been supplied yet.
+ * Search the codebase for <PlaceholderNote to find everything still to replace.
+ */
+interface Props {
+  title?: string;
+  label?: string;
+}
+
+const { title, label = 'Placeholder' } = Astro.props;
+---
+
+<div class="placeholder placeholder-note" role="note">
+  <p class="placeholder-note__label">{label}</p>
+  {title && <p class="placeholder-note__title">{title}</p>}
+  <div class="placeholder-note__body"><slot /></div>
+</div>
+
+<style>
+  .placeholder-note {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .placeholder-note__label {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--gray-500);
+  }
+
+  :global(.surface-dark) .placeholder-note__label,
+  :global(.surface-darker) .placeholder-note__label {
+    color: var(--on-dark-muted);
+  }
+
+  .placeholder-note__title {
+    font-family: var(--font-display);
+    font-weight: 650;
+    font-size: var(--text-lg);
+  }
+
+  .placeholder-note__body {
+    color: var(--ink-muted);
+    font-size: var(--text-sm);
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  :global(.surface-dark) .placeholder-note__body,
+  :global(.surface-darker) .placeholder-note__body {
+    color: var(--on-dark-muted);
+  }
+</style>

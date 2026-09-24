@@ -1,0 +1,246 @@
+---
+import { site } from '@/config/site';
+import { withBase, normalizePath } from '@/lib/paths';
+import Icon from './Icon.astro';
+
+const current = normalizePath(Astro.url.pathname);
+const isActive = (href: string) => current === href || (href !== '/' && current.startsWith(href));
+---
+
+<header class="site-header surface-darker">
+  <div class="container site-header__inner">
+    <a class="wordmark" href={withBase('/')} aria-label={`${site.name} — home`}>
+      <span class="wordmark__mono" aria-hidden="true">{site.monogram}</span>
+      <span class="wordmark__name">{site.name}</span>
+    </a>
+
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      data-nav-toggle
+    >
+      <Icon name="menu" class="nav-toggle__open" />
+      <Icon name="close" class="nav-toggle__close" />
+      <span class="visually-hidden">Menu</span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Primary" data-nav>
+      <ul>
+        {
+          site.nav.map((item) => (
+            <li>
+              <a href={withBase(item.href)} aria-current={isActive(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Mobile navigation: progressive enhancement. Without JavaScript the links
+  // stay visible (see the .js-nav rules below).
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+
+  if (toggle && nav) {
+    document.documentElement.classList.add('js-nav');
+
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      nav.dataset.open = String(open);
+    };
+
+    toggle.addEventListener('click', () => {
+      setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    nav.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) setOpen(false);
+    });
+
+    window.matchMedia('(min-width: 48rem)').addEventListener('change', (event) => {
+      if (event.matches) setOpen(false);
+    });
+  }
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid var(--border-dark);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    min-height: var(--header-height);
+  }
+
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-decoration: none;
+    color: var(--on-dark);
+  }
+
+  .wordmark__mono {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1.5px solid var(--accent);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+  }
+
+  .wordmark__name {
+    font-family: var(--font-display);
+    font-weight: 650;
+    font-size: 1.02rem;
+    letter-spacing: -0.005em;
+  }
+
+  .site-nav ul {
+    display: flex;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+  }
+
+  .site-nav a {
+    display: block;
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--radius-sm);
+    color: var(--on-dark-muted);
+    text-decoration: none;
+    font-size: var(--text-sm);
+    font-weight: 550;
+    transition: color var(--duration) var(--ease);
+    position: relative;
+  }
+
+  .site-nav a:hover {
+    color: var(--on-dark);
+  }
+
+  .site-nav a[aria-current='page'] {
+    color: var(--on-dark);
+  }
+
+  .site-nav a[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    left: 0.8rem;
+    right: 0.8rem;
+    bottom: 0.15rem;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .nav-toggle {
+    display: none;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-right: -0.5rem;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--on-dark);
+    cursor: pointer;
+  }
+
+  /* Icon is a child component, so its classes need :global() to be reached. */
+  .nav-toggle :global(svg) {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+
+  .nav-toggle :global(.nav-toggle__close) {
+    display: none;
+  }
+
+  .nav-toggle[aria-expanded='true'] :global(.nav-toggle__open) {
+    display: none;
+  }
+
+  .nav-toggle[aria-expanded='true'] :global(.nav-toggle__close) {
+    display: block;
+  }
+
+  @media (max-width: 47.99rem) {
+    .wordmark__name {
+      font-size: 0.95rem;
+    }
+
+    /* Only collapse the menu when the script is running. */
+    :global(.js-nav) .nav-toggle {
+      display: grid;
+    }
+
+    :global(.js-nav) .site-nav {
+      position: absolute;
+      inset: 100% 0 auto 0;
+      background: var(--navy-950);
+      border-bottom: 1px solid var(--border-dark);
+      padding: var(--space-2) var(--gutter) var(--space-5);
+      display: none;
+    }
+
+    :global(.js-nav) .site-nav[data-open='true'] {
+      display: block;
+    }
+
+    :global(.js-nav) .site-nav ul {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    :global(.js-nav) .site-nav a {
+      padding: 0.85rem 0;
+      font-size: var(--text-base);
+      border-bottom: 1px solid var(--border-dark);
+      border-radius: 0;
+    }
+
+    :global(.js-nav) .site-nav a[aria-current='page']::after {
+      left: 0;
+      right: auto;
+      width: 1.5rem;
+      bottom: -1px;
+    }
+
+    /* No-JS fallback: keep links visible, allow wrapping. */
+    .site-header__inner {
+      flex-wrap: wrap;
+    }
+
+    .site-nav ul {
+      flex-wrap: wrap;
+      gap: 0;
+    }
+  }
+</style>

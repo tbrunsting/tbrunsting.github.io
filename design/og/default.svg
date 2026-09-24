@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glow" cx="1" cy="0" r="0.9">
+      <stop offset="0" stop-color="#e3a53b" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#e3a53b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0a1424"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- Subtle pitch lines -->
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="2" transform="rotate(-8 900 315)">
+    <rect x="560" y="40" width="760" height="520" rx="3"/>
+    <line x1="940" y1="40" x2="940" y2="560"/>
+    <circle cx="940" cy="300" r="80"/>
+    <rect x="560" y="170" width="120" height="260"/>
+    <rect x="1200" y="170" width="120" height="260"/>
+  </g>
+
+  <!-- Monogram -->
+  <rect x="80" y="80" width="64" height="64" rx="10" fill="none" stroke="#e3a53b" stroke-width="3"/>
+  <text x="112" y="123" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-weight="800" font-size="26" fill="#e3a53b">TB</text>
+
+  <text x="80" y="300" font-family="Segoe UI, Arial, sans-serif" font-weight="600" font-size="22" letter-spacing="4" fill="#e3a53b">SPORTS ANALYTICS</text>
+  <text x="80" y="378" font-family="Segoe UI, Arial, sans-serif" font-weight="800" font-size="68" fill="#f5f3ee">Turning sports data</text>
+  <text x="80" y="458" font-family="Segoe UI, Arial, sans-serif" font-weight="800" font-size="68" fill="#f5f3ee">into insight.</text>
+
+  <text x="80" y="560" font-family="Segoe UI, Arial, sans-serif" font-weight="600" font-size="26" fill="#aab4c5">Tyler Brunsting</text>
+</svg>

@@ -1,0 +1,91 @@
+---
+/**
+ * Highlighted aside for the reader.
+ * Types: note | validation | limitation | decision | warning
+ *
+ * MDX usage:
+ *   <Callout type="limitation" title="Undisclosed fees">
+ *     Transfers with undisclosed fees are counted but never valued.
+ *   </Callout>
+ */
+interface Props {
+  type?: 'note' | 'validation' | 'limitation' | 'decision' | 'warning';
+  title?: string;
+}
+
+const { type = 'note', title } = Astro.props;
+
+const defaults: Record<NonNullable<Props['type']>, string> = {
+  note: 'Note',
+  validation: 'Validation',
+  limitation: 'Limitation',
+  decision: 'Methodological decision',
+  warning: 'Caution',
+};
+---
+
+<aside class:list={['callout', `callout--${type}`]} aria-label={title ?? defaults[type]}>
+  <p class="callout__kind">{defaults[type]}</p>
+  {title && <p class="callout__title">{title}</p>}
+  <div class="callout__body">
+    <slot />
+  </div>
+</aside>
+
+<style>
+  .callout {
+    --c: var(--info);
+    --c-soft: var(--info-soft);
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius);
+    border: 1px solid color-mix(in srgb, var(--c) 22%, transparent);
+    border-left: 3px solid var(--c);
+    background: var(--c-soft);
+  }
+
+  .callout--validation {
+    --c: var(--success);
+    --c-soft: var(--success-soft);
+  }
+
+  .callout--limitation {
+    --c: var(--warning);
+    --c-soft: var(--warning-soft);
+  }
+
+  .callout--decision {
+    --c: var(--navy-700);
+    --c-soft: #e8ecf3;
+  }
+
+  .callout--warning {
+    --c: var(--caution);
+    --c-soft: var(--caution-soft);
+  }
+
+  .callout__kind {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c);
+  }
+
+  .callout__title {
+    margin-top: var(--space-1);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-lg);
+    line-height: var(--leading-snug);
+  }
+
+  .callout__body {
+    margin-top: var(--space-2);
+    font-size: 0.975rem;
+    line-height: 1.65;
+  }
+
+  .callout__body :global(> * + *) {
+    margin-top: 0.75em;
+  }
+</style>

@@ -1,0 +1,15 @@
+---
+/** Responsive grid wrapper for <FindingCard> components. */
+---
+
+<div class="finding-grid wide">
+  <slot />
+</div>
+
+<style>
+  .finding-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--space-4);
+  }
+</style>

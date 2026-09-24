@@ -1,0 +1,13 @@
+---
+/**
+ * Replaces every Markdown table in MDX: wraps it in a focusable, horizontally
+ * scrollable region so wide tables never break the layout on small screens.
+ */
+const props = Astro.props;
+---
+
+<div class="table-scroll" role="region" aria-label="Table (scrolls horizontally)" tabindex="0">
+  <table {...props}>
+    <slot />
+  </table>
+</div>

@@ -1,0 +1,27 @@
+---
+/**
+ * Internal component reference (not linked from navigation, excluded from the
+ * sitemap, marked noindex). Useful while writing case studies; delete this
+ * page and src/examples/ before launch if you prefer not to publish it.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import { mdxComponents } from '@/components/mdx';
+import { Content } from '@/examples/component-reference.mdx';
+import '@/styles/prose.css';
+---
+
+<BaseLayout title="Component reference" description="Internal reference for case-study components." noindex>
+  <PageHeader
+    eyebrow="Internal"
+    title="Case-study components"
+    lede="Every building block available to project MDX files, shown with generic example content."
+  />
+  <div class="surface-light">
+    <article class="container section">
+      <div class="prose">
+        <Content components={mdxComponents} />
+      </div>
+    </article>
+  </div>
+</BaseLayout>

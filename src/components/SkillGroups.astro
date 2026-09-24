@@ -1,0 +1,54 @@
+---
+import { skillGroups } from '@/data/skills';
+import ToolList from './ToolList.astro';
+
+interface Props {
+  headingLevel?: 'h3' | 'h4';
+}
+
+const { headingLevel: Heading = 'h3' } = Astro.props;
+---
+
+<ul class="skill-groups" role="list">
+  {
+    skillGroups.map((group) => (
+      <li class="skill-group">
+        <Heading class="skill-group__title">{group.title}</Heading>
+        <p class="skill-group__desc">{group.description}</p>
+        <ToolList tools={group.tools} size="sm" label={`${group.title} tools`} />
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .skill-groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr));
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+  }
+
+  .skill-group {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+  }
+
+  .skill-group__title {
+    font-size: var(--text-base);
+    font-weight: 700;
+    line-height: var(--leading-snug);
+  }
+
+  .skill-group__desc {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+    line-height: 1.55;
+  }
+</style>

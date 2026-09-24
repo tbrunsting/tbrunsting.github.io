@@ -1,0 +1,105 @@
+---
+/**
+ * Titled, syntax-highlighted code block (build-time Shiki, no client JS).
+ * Plain fenced code blocks in MDX are highlighted automatically; use this when
+ * you want a filename/caption or a link to the full source.
+ *
+ * MDX usage:
+ *   <CodeBlock lang="sql" title="sql/60_score_composite.sql" href="https://github.com/..." code={`
+ *   SELECT ...
+ *   `} />
+ */
+import { Code } from 'astro:components';
+import Icon from '../Icon.astro';
+
+interface Props {
+  code: string;
+  lang?: string;
+  title?: string;
+  /** Link to the full file on GitHub. */
+  href?: string;
+}
+
+const { lang = 'plaintext', title, href } = Astro.props;
+const code = Astro.props.code.replace(/^\n+|\s+$/g, '');
+
+// Languages Shiki doesn't bundle fall back to plain text but keep their label.
+const supported = new Set(['sql', 'r', 'python', 'py', 'js', 'javascript', 'ts', 'typescript', 'json', 'yaml', 'bash', 'shell', 'powershell', 'csv', 'markdown', 'md', 'plaintext', 'text']);
+const highlightLang = supported.has(lang.toLowerCase()) ? lang.toLowerCase() : 'plaintext';
+const labels: Record<string, string> = { r: 'R', sql: 'SQL', python: 'Python', py: 'Python', dax: 'DAX', powershell: 'PowerShell' };
+const langLabel = labels[lang.toLowerCase()] ?? lang.toUpperCase();
+---
+
+<figure class="code-block wide">
+  <figcaption class="code-block__bar">
+    <span class="code-block__title">{title ?? langLabel}</span>
+    {title && lang !== 'plaintext' && <span class="code-block__lang">{langLabel}</span>}
+    {
+      href && (
+        <a class="code-block__link" href={href} target="_blank" rel="noopener">
+          View source
+          <Icon name="external" />
+          <span class="visually-hidden">(opens in a new tab)</span>
+        </a>
+      )
+    }
+  </figcaption>
+  <Code code={code} lang={highlightLang as any} theme="github-light" />
+</figure>
+
+<style>
+  .code-block {
+    border: var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--white);
+  }
+
+  .code-block__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: 0.55rem 1rem;
+    border-bottom: var(--border);
+    background: var(--paper);
+    font-size: var(--text-xs);
+  }
+
+  .code-block__title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .code-block__lang {
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+  }
+
+  .code-block__link {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-weight: 600;
+    color: var(--accent-strong);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .code-block__link :global(svg) {
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+
+  .code-block :global(pre) {
+    border: 0 !important;
+    border-radius: 0 !important;
+    margin: 0;
+  }
+</style>

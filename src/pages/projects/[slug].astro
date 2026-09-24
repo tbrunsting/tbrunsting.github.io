@@ -1,0 +1,134 @@
+---
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ProjectHero from '@/components/ProjectHero.astro';
+import DashboardPreview from '@/components/DashboardPreview.astro';
+import DashboardEmbed from '@/components/DashboardEmbed.astro';
+import ContactCTA from '@/components/ContactCTA.astro';
+import Icon from '@/components/Icon.astro';
+import { mdxComponents } from '@/components/mdx';
+import { getProjects, type Project } from '@/lib/projects';
+import { withBase } from '@/lib/paths';
+import '@/styles/prose.css';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  const publicDir = join(process.cwd(), 'public');
+
+  return projects.map((project) => {
+    // Never reference a share image that doesn't exist.
+    const og = project.data.ogImage;
+    if (og && !existsSync(join(publicDir, og))) {
+      throw new Error(
+        `Project "${project.id}" sets ogImage "${og}", but public${og} does not exist. Add the file or remove the field.`,
+      );
+    }
+    return { params: { slug: project.id }, props: { project } };
+  });
+}
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const { data } = project;
+const { Content } = await render(project);
+---
+
+<BaseLayout
+  title={data.title}
+  description={data.summary}
+  image={data.ogImage}
+  imageAlt={data.ogImage ? (data.ogImageAlt ?? data.title) : undefined}
+  type="article"
+  publishedAt={data.publishedAt}
+  updatedAt={data.updatedAt}
+>
+  <ProjectHero project={project} />
+
+  <div class="surface-light">
+    <div class="container project-dashboard">
+      <DashboardPreview dashboard={data.dashboard} title={data.title} />
+    </div>
+
+    <article class="container project-body" aria-label="Case study">
+      <div class="prose">
+        <Content components={mdxComponents} />
+      </div>
+    </article>
+
+    {
+      data.dashboard.embedUrl && (
+        <div class="container project-embed">
+          <DashboardEmbed
+            embedUrl={data.dashboard.embedUrl}
+            url={data.dashboard.url}
+            title={`${data.title} — interactive dashboard`}
+            preview={data.dashboard.preview}
+          />
+        </div>
+      )
+    }
+
+    <nav class="container project-links" aria-label="Project links">
+      <a class="btn btn--ghost" href={withBase('/projects/')}>
+        <Icon name="arrow-left" />
+        All projects
+      </a>
+      {
+        data.githubUrl && (
+          <a class="btn btn--dark" href={data.githubUrl} target="_blank" rel="noopener">
+            <Icon name="github" />
+            Full source code on GitHub
+            <span class="visually-hidden">(opens in a new tab)</span>
+          </a>
+        )
+      }
+      {
+        data.dashboard.url && (
+          <a class="btn btn--dark" href={data.dashboard.url} target="_blank" rel="noopener">
+            <Icon name="chart" />
+            Open Interactive Dashboard
+            <span class="visually-hidden">(opens in a new tab)</span>
+          </a>
+        )
+      }
+    </nav>
+  </div>
+
+  <ContactCTA />
+</BaseLayout>
+
+<style>
+  .project-dashboard {
+    padding-top: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    max-width: calc(var(--width-wide) + 2 * var(--gutter));
+  }
+
+  .project-body {
+    padding-block: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  }
+
+  .project-embed {
+    padding-bottom: var(--space-8);
+  }
+
+  .project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    padding-top: var(--space-6);
+    padding-bottom: var(--section-pad);
+    max-width: calc(var(--width-wide) + 2 * var(--gutter));
+    border-top: var(--border);
+  }
+
+  @media (min-width: 64rem) {
+    .project-links {
+      border-top: 0;
+    }
+  }
+</style>

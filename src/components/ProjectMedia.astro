@@ -1,0 +1,105 @@
+---
+/**
+ * Visual for project cards and the featured project.
+ * Priority: real dashboard screenshot → thumbnail → neutral branded cover.
+ * The cover never imitates a dashboard or shows data.
+ */
+import { Image } from 'astro:assets';
+import type { Project } from '@/lib/projects';
+
+interface Props {
+  project: Project;
+  sizes?: string;
+  eager?: boolean;
+}
+
+const { project, sizes = '(min-width: 64rem) 36rem, 100vw', eager = false } = Astro.props;
+const { dashboard, thumbnail, sport } = project.data;
+const media = dashboard.preview ?? thumbnail;
+---
+
+<div class="project-media">
+  {
+    media ? (
+      <Image
+        src={media.src}
+        alt={media.alt}
+        widths={[480, 800, 1200]}
+        sizes={sizes}
+        loading={eager ? 'eager' : 'lazy'}
+        class="project-media__img"
+      />
+    ) : (
+      <div class="project-media__cover surface-dark">
+        <svg class="project-media__lines" viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+          <rect x="20" y="20" width="360" height="210" rx="2" />
+          <line x1="200" y1="20" x2="200" y2="230" />
+          <circle cx="200" cy="125" r="34" />
+          <rect x="20" y="75" width="52" height="100" />
+          <rect x="328" y="75" width="52" height="100" />
+        </svg>
+        <span class="project-media__sport">{sport}</span>
+        {dashboard.status === 'in-development' && (
+          <span class="badge badge--accent project-media__badge">
+            <span class="badge__dot" aria-hidden="true" />
+            Dashboard in development
+          </span>
+        )}
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .project-media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--navy-900);
+  }
+
+  .project-media__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top left;
+    transition: transform 400ms var(--ease);
+  }
+
+  .project-media__cover {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: var(--space-5);
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgb(227 165 59 / 0.12), transparent 60%),
+      linear-gradient(160deg, var(--navy-800), var(--navy-950));
+  }
+
+  .project-media__lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: rgb(255 255 255 / 0.08);
+    stroke-width: 1.2;
+  }
+
+  .project-media__sport {
+    position: relative;
+    font-family: var(--font-display);
+    font-weight: 650;
+    font-size: var(--text-sm);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--on-dark-muted);
+  }
+
+  .project-media__badge {
+    position: relative;
+  }
+</style>

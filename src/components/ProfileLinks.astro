@@ -1,0 +1,126 @@
+---
+/**
+ * GitHub / LinkedIn / Email links from src/config/site.ts.
+ * Links that are not provided yet are shown as muted "to be added" rows,
+ * never as dead links.
+ */
+import { site } from '@/config/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  size?: 'md' | 'lg';
+}
+
+const { size = 'md' } = Astro.props;
+const { github, linkedin, email } = site.links;
+
+const rows = [
+  { key: 'github', label: 'GitHub', icon: 'github', href: github, display: github?.replace(/^https?:\/\//, '') },
+  { key: 'linkedin', label: 'LinkedIn', icon: 'linkedin', href: linkedin, display: linkedin?.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '') },
+  { key: 'email', label: 'Email', icon: 'mail', href: email ? `mailto:${email}` : null, display: email },
+] as const;
+---
+
+<ul class:list={['profile-links', `profile-links--${size}`]} role="list">
+  {
+    rows.map((row) => (
+      <li>
+        {row.href ? (
+          <a class="profile-link" href={row.href} {...(row.key !== 'email' ? { target: '_blank', rel: 'noopener' } : {})}>
+            <Icon name={row.icon} />
+            <span class="profile-link__text">
+              <span class="profile-link__label">{row.label}</span>
+              <span class="profile-link__value">{row.display}</span>
+            </span>
+          </a>
+        ) : (
+          <span class="profile-link profile-link--pending">
+            <Icon name={row.icon} />
+            <span class="profile-link__text">
+              <span class="profile-link__label">{row.label}</span>
+              <span class="profile-link__value">To be added</span>
+            </span>
+          </span>
+        )}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .profile-links {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .profile-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: background-color var(--duration) var(--ease);
+  }
+
+  a.profile-link:hover {
+    background: var(--paper);
+  }
+
+  .profile-link :global(svg) {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--ink-muted);
+  }
+
+  .profile-link__text {
+    display: grid;
+    min-width: 0;
+  }
+
+  .profile-link__label {
+    font-weight: 650;
+    font-size: var(--text-sm);
+  }
+
+  .profile-link__value {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+    overflow-wrap: anywhere;
+  }
+
+  a.profile-link .profile-link__value {
+    color: var(--accent-strong);
+  }
+
+  .profile-link--pending {
+    opacity: 0.75;
+  }
+
+  .profile-link--pending .profile-link__value {
+    font-style: italic;
+  }
+
+  .profile-links--lg .profile-link {
+    padding: var(--space-4) var(--space-5);
+    border: var(--border);
+    background: var(--white);
+  }
+
+  .profile-links--lg .profile-link :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .profile-links--lg .profile-link__label {
+    font-size: var(--text-base);
+  }
+
+  .profile-links--lg a.profile-link:hover {
+    border-color: var(--gray-400);
+    background: var(--white);
+  }
+</style>

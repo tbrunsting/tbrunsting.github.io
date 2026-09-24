@@ -1,0 +1,136 @@
+{/*
+  Component reference for case-study authors.
+  EVERYTHING ON THIS PAGE IS GENERIC EXAMPLE CONTENT — not project data or findings.
+*/}
+
+<PlaceholderNote label="Internal reference" title="Example content only">
+  This page demonstrates the building blocks available to every project case study. None of the numbers, code or text below are real project results.
+</PlaceholderNote>
+
+## Headings and body text
+
+Case studies are written in plain Markdown inside MDX. Paragraphs sit in a comfortable reading column, with **bold**, *italic*, `inline code` and [links](#) styled for long-form reading.
+
+### A third-level heading
+
+- Bulleted lists for short enumerations
+- Each item keeps generous spacing
+  - Nested items are supported
+
+1. Numbered lists for ordered steps
+2. Like a methodology sequence
+
+> A pull quote or quoted source sits here, set apart from the main text.
+
+## Formulas
+
+<Formula label="Standard score (example)" tex="z_{i} = \frac{x_{i} - \mu_{g,s}}{\sigma_{g,s}}">
+  Example explanation: *x* is a player's per-90 value for a metric, and μ and σ are the mean and standard deviation for that position group *g* in season *s*.
+</Formula>
+
+Inline math works too, for example <Formula inline tex="\sigma_{g,s}" /> in the middle of a sentence.
+
+<Formula label="A long equation scrolls horizontally on small screens" tex="\text{Index}_{c,s} = w_1 \cdot \text{Pillar}_{1} + w_2 \cdot \text{Pillar}_{2} + w_3 \cdot \text{Pillar}_{3} + w_4 \cdot \text{Pillar}_{4} \quad \text{where} \quad \sum_{k=1}^{4} w_k = 1" />
+
+## Code
+
+Plain fenced code blocks are highlighted at build time:
+
+```sql
+-- Example query
+SELECT club_id, season, SUM(fee_eur) AS gross_spend
+FROM transfers
+WHERE fee_eur IS NOT NULL
+GROUP BY club_id, season
+ORDER BY gross_spend DESC;
+```
+
+```r
+# Example R
+scores <- players |>
+  group_by(season, position_group) |>
+  mutate(z = (value - mean(value)) / sd(value))
+```
+
+```python
+# Example Python
+import hashlib
+
+def sha256(path: str) -> str:
+    with open(path, "rb") as f:
+        return hashlib.sha256(f.read()).hexdigest()
+```
+
+Use `<CodeBlock>` for a titled block with a source link:
+
+<CodeBlock
+  lang="dax"
+  title="Example measure.dax"
+  code={`
+Gross Spend =
+CALCULATE (
+    SUM ( Transfers[FeeEUR] ),
+    Transfers[Direction] = "In"
+)
+`}
+/>
+
+## Data pipeline
+
+<DataPipeline
+  caption="Example pipeline diagram."
+  steps={[
+    { label: 'Collect', detail: 'Source data is fetched and frozen', tools: ['Python'] },
+    { label: 'Model', detail: 'Loaded into a relational schema', tools: ['SQL'] },
+    { label: 'Score', detail: 'Metrics computed and verified', tools: ['R'] },
+    { label: 'Present', detail: 'Published to a dashboard', tools: ['Power BI'] },
+  ]}
+/>
+
+## Callouts
+
+<Callout type="note" title="A general note">
+  Context the reader should keep in mind.
+</Callout>
+
+<Callout type="validation" title="How a result was checked">
+  Describe the independent check and what it showed.
+</Callout>
+
+<Callout type="limitation" title="A known limitation">
+  What the analysis cannot tell you, and why.
+</Callout>
+
+<Callout type="decision" title="A methodological decision">
+  The choice made, the alternatives considered, and the reason.
+</Callout>
+
+## Findings
+
+<FindingGrid>
+  <FindingCard title="Example finding one" metric="x.x%" metricLabel="Example metric">
+    A short explanation of what the finding means.
+  </FindingCard>
+  <FindingCard title="Example finding two" metric="0.00" metricLabel="Example metric">
+    Findings can include a headline figure or be text only.
+  </FindingCard>
+  <FindingCard title="Example finding three">
+    A text-only finding card.
+  </FindingCard>
+</FindingGrid>
+
+## Technical notes
+
+<TechnicalNote title="Rejected alternative: an example">
+  Collapsible detail for readers who want the full reasoning, such as an approach that was considered and set aside.
+</TechnicalNote>
+
+## Tables
+
+Wide tables scroll horizontally inside their own region instead of breaking the layout.
+
+| Column A | Column B | Column C | Column D | Column E | Column F | Column G |
+|---|---|---:|---:|---:|---:|---|
+| Example | Row one | 1.00 | 2.00 | 3.00 | 4.00 | Text |
+| Example | Row two | 5.00 | 6.00 | 7.00 | 8.00 | Longer text value |
+| Example | Row three | 9.00 | 10.00 | 11.00 | 12.00 | Text |

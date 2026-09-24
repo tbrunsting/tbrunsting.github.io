@@ -1,0 +1,41 @@
+---
+/** Navy page intro used by inner pages (Projects, About, Resume, Contact). */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+}
+
+const { eyebrow, title, lede } = Astro.props;
+---
+
+<header class="page-header surface-dark">
+  <div class="container page-header__inner">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1>{title}</h1>
+    {lede && <p class="page-header__lede">{lede}</p>}
+    <slot />
+  </div>
+</header>
+
+<style>
+  .page-header {
+    padding-block: clamp(3rem, 2rem + 4vw, 5.5rem) clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  }
+
+  .page-header__inner {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  h1 {
+    font-size: var(--text-4xl);
+    max-width: 18ch;
+  }
+
+  .page-header__lede {
+    max-width: 40rem;
+    font-size: var(--text-lg);
+    color: var(--on-dark-muted);
+  }
+</style>

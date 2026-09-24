@@ -1,0 +1,134 @@
+---
+/**
+ * Data pipeline diagram as an ordered list of stages: horizontal with arrows
+ * on wide screens, vertical on narrow screens. Plain semantic HTML, so it is
+ * readable by screen readers and never needs to be squeezed.
+ *
+ * MDX usage:
+ *   <DataPipeline
+ *     caption="From frozen sources to dashboard"
+ *     steps={[
+ *       { label: 'Ingest', detail: 'Frozen, checksummed sources', tools: ['Python'] },
+ *       { label: 'Warehouse', detail: 'Star schema', tools: ['PostgreSQL'] },
+ *     ]}
+ *   />
+ */
+interface Step {
+  label: string;
+  detail?: string;
+  tools?: string[];
+}
+
+interface Props {
+  steps: Step[];
+  caption?: string;
+}
+
+const { steps, caption } = Astro.props;
+---
+
+<figure class="pipeline wide">
+  <ol class="pipeline__steps" style={`--count: ${steps.length}`}>
+    {
+      steps.map((step, i) => (
+        <li class="pipeline__step">
+          <span class="pipeline__index" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <span class="pipeline__label">{step.label}</span>
+          {step.detail && <span class="pipeline__detail">{step.detail}</span>}
+          {step.tools && step.tools.length > 0 && <span class="pipeline__tools">{step.tools.join(' · ')}</span>}
+        </li>
+      ))
+    }
+  </ol>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .pipeline {
+    padding: var(--space-5);
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+  }
+
+  .pipeline__steps {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .pipeline__step {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0.2rem;
+    padding: var(--space-4);
+    border: var(--border);
+    border-top: 3px solid var(--navy-700);
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+
+  /* Connector arrows */
+  .pipeline__step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: calc(var(--space-5) * -1 + 0.3rem);
+    width: 0.6rem;
+    height: 0.6rem;
+    border-right: 2px solid var(--gray-400);
+    border-bottom: 2px solid var(--gray-400);
+    transform: translateX(-50%) rotate(45deg);
+  }
+
+  @media (min-width: 52rem) {
+    .pipeline__steps {
+      grid-template-columns: repeat(var(--count), minmax(0, 1fr));
+      gap: var(--space-6);
+    }
+
+    .pipeline__step:not(:last-child)::after {
+      left: auto;
+      right: calc(var(--space-6) * -1 + 0.55rem);
+      top: 50%;
+      bottom: auto;
+      transform: translateY(-50%) rotate(-45deg);
+    }
+  }
+
+  .pipeline__index {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--accent-strong);
+    font-weight: 600;
+  }
+
+  .pipeline__label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: var(--leading-snug);
+  }
+
+  .pipeline__detail {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+
+  .pipeline__tools {
+    margin-top: var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+
+  figcaption {
+    margin-top: var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+</style>
