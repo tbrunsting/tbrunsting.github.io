@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import HeroSports from '@/components/HeroSports.astro';
 import FeaturedProject from '@/components/FeaturedProject.astro';
 import ProjectGrid from '@/components/ProjectGrid.astro';
 import SkillGroups from '@/components/SkillGroups.astro';
 import ContactCTA from '@/components/ContactCTA.astro';
-import Icon from '@/components/Icon.astro';
+import Icon, { type IconName } from '@/components/Icon.astro';
 import { getProjects } from '@/lib/projects';
 import { withBase } from '@/lib/paths';
 
@@ -15,63 +16,52 @@ const others = projects.filter((p) => !p.data.featured);
 const lead = featured.length > 0 ? featured : projects.slice(0, 1);
 const rest = featured.length > 0 ? others : projects.slice(1);
 
-const principles = [
+const principles: { title: string; text: string; icon: IconName }[] = [
   {
     title: 'Verify before analysing',
     text: 'Sources are checked, frozen and documented before any result depends on them, so a finding can always be traced back to its data.',
+    icon: 'shield-check',
   },
   {
     title: 'Decisions on the record',
     text: 'Judgement calls, rejected alternatives and known limitations are written down alongside the reasoning, not buried in code.',
+    icon: 'ledger',
   },
   {
     title: 'Built to be read',
     text: 'Dashboards and case studies are designed for readers who want the answer and the confidence behind it.',
+    icon: 'book',
   },
 ];
 ---
 
 <BaseLayout>
   <!-- Hero -->
-  <section class="hero surface-darker" aria-labelledby="hero-title">
-    <svg class="hero__field" viewBox="0 0 600 400" aria-hidden="true" focusable="false">
-      <rect x="10" y="10" width="580" height="380" rx="3" />
-      <line x1="300" y1="10" x2="300" y2="390" />
-      <circle cx="300" cy="200" r="58" />
-      <circle cx="300" cy="200" r="2.5" class="dot" />
-      <rect x="10" y="110" width="92" height="180" />
-      <rect x="10" y="160" width="32" height="80" />
-      <rect x="498" y="110" width="92" height="180" />
-      <rect x="558" y="160" width="32" height="80" />
-    </svg>
+  <section class="hero surface-dark" aria-labelledby="hero-title">
+    <HeroSports />
     <div class="container hero__inner">
-      <p class="eyebrow">Sports Analytics</p>
-      <h1 id="hero-title">Turning sports data into insight.</h1>
-      <p class="hero__lede">I build data-driven projects exploring questions across professional and collegiate sports.</p>
-      <div class="btn-row">
-        <a class="btn btn--primary" href={withBase('/projects/')}>
-          Explore Projects
-          <Icon name="arrow-right" />
-        </a>
-        <a class="btn btn--ghost" href={withBase('/about/')}>About my approach</a>
+      <div class="hero__copy">
+        <p class="eyebrow">Sports Analytics</p>
+        <h1 id="hero-title">Turning sports data into <span class="accent-word">insight.</span></h1>
+        <p class="hero__lede">I build data-driven projects exploring questions across professional and collegiate sports.</p>
+        <div class="btn-row hero__actions">
+          <a class="btn btn--primary" href={withBase('/projects/')}>
+            Explore Projects
+            <Icon name="arrow-right" />
+          </a>
+          <a class="btn btn--ghost" href={withBase('/about/')}>About my approach</a>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Featured project -->
-  <section class="section surface-light" aria-labelledby="featured-title">
+  <section class="section surface-light featured-section" aria-label="Featured project">
     <div class="container">
-      <div class="section-heading">
-        <p class="eyebrow">Projects</p>
-        <h2 id="featured-title">Featured work</h2>
-      </div>
-
-      <div class="featured-list">
-        {lead.map((project) => <FeaturedProject project={project} />)}
-      </div>
+      {lead.map((project) => <FeaturedProject project={project} />)}
 
       {
-        rest.length > 0 ? (
+        rest.length > 0 && (
           <div class="more-projects">
             <div class="more-projects__head">
               <h2 class="more-projects__title">More projects</h2>
@@ -82,17 +72,14 @@ const principles = [
             </div>
             <ProjectGrid projects={rest.slice(0, 6)} />
           </div>
-        ) : (
-          <p class="coverage-note">
-            Future projects will extend this work across college football, the NFL, MLB, the NBA and college basketball.
-          </p>
         )
       }
     </div>
   </section>
 
   <!-- Analytics profile -->
-  <section class="section surface-dark" aria-labelledby="profile-title">
+  <section class="section surface-dark grid-texture profile-section" aria-labelledby="profile-title">
+    <span class="profile-section__rule" aria-hidden="true"></span>
     <div class="container profile">
       <div class="profile__intro">
         <p class="eyebrow">Analytics profile</p>
@@ -101,21 +88,26 @@ const principles = [
           Each project starts with a specific question and follows it end to end: sourcing and validating the data, designing the models, and presenting the results in a dashboard and a technical case study that explains both the answer and how much confidence it deserves.
         </p>
       </div>
-      <ol class="principles" role="list">
+      <ul class="principles" role="list">
         {
           principles.map((p) => (
             <li class="principle">
-              <h3>{p.title}</h3>
-              <p>{p.text}</p>
+              <span class="principle__icon">
+                <Icon name={p.icon} />
+              </span>
+              <div>
+                <h3>{p.title}</h3>
+                <p>{p.text}</p>
+              </div>
             </li>
           ))
         }
-      </ol>
+      </ul>
     </div>
   </section>
 
   <!-- Tools & skills -->
-  <section class="section surface-alt" aria-labelledby="tools-title">
+  <section class="section surface-light" aria-labelledby="tools-title">
     <div class="container">
       <div class="section-heading">
         <p class="eyebrow">Tools & skills</p>
@@ -130,70 +122,79 @@ const principles = [
 </BaseLayout>
 
 <style>
-  /* Hero */
+  /* ---------- Hero ---------- */
   .hero {
     position: relative;
     overflow: hidden;
-    padding-block: clamp(4.5rem, 3rem + 7vw, 9rem) clamp(4rem, 3rem + 5vw, 7.5rem);
+    display: grid;
   }
 
-  .hero__field {
+  .hero :global(.hero-sports) {
     position: absolute;
-    right: -8%;
-    top: 50%;
-    width: min(62rem, 95vw);
-    transform: translateY(-50%) rotate(-8deg);
-    fill: none;
-    stroke: rgb(255 255 255 / 0.06);
-    stroke-width: 1.4;
-    pointer-events: none;
-  }
-
-  .hero__field .dot {
-    fill: rgb(227 165 59 / 0.5);
-    stroke: none;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 55%;
   }
 
   .hero__inner {
     position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    min-height: clamp(34rem, 78vh, 46rem);
+    padding-block: var(--space-8);
+  }
+
+  .hero__copy {
     display: grid;
     gap: var(--space-5);
     justify-items: start;
+    max-width: 41rem;
   }
 
   .hero h1 {
-    font-size: var(--text-4xl);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    max-width: 14ch;
+    font-size: clamp(2.6rem, 1.3rem + 4.3vw, 4.7rem);
+    font-weight: 850;
+    line-height: 0.98;
+    max-width: 16ch;
   }
 
   .hero__lede {
-    max-width: 36rem;
+    max-width: 30rem;
     font-size: var(--text-lg);
     color: var(--on-dark-muted);
   }
 
-  .hero .btn-row {
-    margin-top: var(--space-3);
+  .hero__actions {
+    margin-top: var(--space-2);
   }
 
-  /* Featured */
-  .featured-list {
-    display: grid;
-    gap: var(--space-6);
+  @media (max-width: 59.99rem) {
+    .hero :global(.hero-sports) {
+      position: relative;
+      width: 100%;
+      height: clamp(15rem, 52vw, 24rem);
+    }
+
+    .hero__inner {
+      min-height: 0;
+      padding-block: var(--space-2) var(--space-8);
+      margin-top: calc(var(--space-6) * -1);
+    }
+
+    .hero__actions {
+      width: 100%;
+    }
+
+    .hero__actions .btn {
+      flex: 1 1 14rem;
+    }
   }
 
-  .coverage-note {
-    margin-top: var(--space-6);
-    padding-top: var(--space-5);
-    border-top: var(--border);
-    color: var(--ink-muted);
-    font-size: var(--text-sm);
-  }
-
+  /* ---------- Featured ---------- */
   .more-projects {
-    margin-top: var(--space-8);
+    margin-top: var(--space-9);
   }
 
   .more-projects__head {
@@ -212,9 +213,9 @@ const principles = [
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    font-weight: 600;
+    font-weight: 700;
     font-size: var(--text-sm);
-    color: var(--accent-strong);
+    color: var(--orange-text);
     text-decoration: none;
   }
 
@@ -223,7 +224,24 @@ const principles = [
     height: 1rem;
   }
 
-  /* Profile */
+  /* ---------- Profile ---------- */
+  .profile-section {
+    overflow: hidden;
+  }
+
+  .profile-section__rule {
+    position: absolute;
+    top: -10%;
+    bottom: -10%;
+    left: clamp(0.5rem, 3vw, 3rem);
+    width: 2px;
+    background: linear-gradient(180deg, transparent, var(--orange) 30%, var(--orange) 60%, transparent);
+    transform: rotate(18deg);
+    transform-origin: top;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
   .profile {
     display: grid;
     gap: var(--space-7);
@@ -231,64 +249,71 @@ const principles = [
 
   @media (min-width: 60rem) {
     .profile {
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-8);
-      align-items: start;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      gap: clamp(3rem, 2rem + 4vw, 6rem);
+      align-items: center;
     }
   }
 
   .profile__intro {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-5);
   }
 
   .profile__intro h2 {
     font-size: var(--text-3xl);
+    max-width: 17ch;
   }
 
   .profile__text {
     color: var(--on-dark-muted);
     font-size: var(--text-lg);
+    max-width: 34rem;
   }
 
   .principles {
     list-style: none;
     padding: 0;
-    display: grid;
-    gap: 0;
-    counter-reset: principle;
   }
 
   .principle {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-4);
     padding-block: var(--space-5);
     border-top: 1px solid var(--border-dark);
-    display: grid;
-    gap: var(--space-2);
   }
 
   .principle:last-child {
     border-bottom: 1px solid var(--border-dark);
   }
 
+  .principle__icon {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 1.5px solid var(--orange-line);
+    border-radius: var(--radius);
+    color: var(--orange);
+  }
+
+  .principle__icon :global(svg) {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
   .principle h3 {
     font-size: var(--text-lg);
+    font-weight: 750;
+    letter-spacing: -0.01em;
     color: var(--on-dark);
   }
 
-  .principle h3::before {
-    content: '';
-    display: inline-block;
-    width: 0.55rem;
-    height: 0.55rem;
-    margin-right: 0.7rem;
-    background: var(--accent);
-    border-radius: 2px;
-    vertical-align: 0.12em;
-  }
-
   .principle p {
+    margin-top: var(--space-1);
     color: var(--on-dark-muted);
     font-size: var(--text-sm);
-    padding-left: 1.25rem;
+    line-height: 1.6;
   }
 </style>

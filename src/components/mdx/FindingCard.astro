@@ -1,13 +1,15 @@
 ---
 /**
  * A single key finding, optionally with a headline figure.
- * Group several inside <FindingGrid>.
+ * Group several inside <FindingGrid>. Use only verified results.
  *
  * MDX usage:
  *   <FindingGrid>
  *     <FindingCard title="..." metric="+12%" metricLabel="...">Explanation.</FindingCard>
  *   </FindingGrid>
  */
+import Icon from '../Icon.astro';
+
 interface Props {
   title: string;
   metric?: string;
@@ -18,14 +20,19 @@ const { title, metric, metricLabel } = Astro.props;
 ---
 
 <article class="finding-card">
-  {
-    metric && (
-      <p class="finding-card__metric">
-        <span class="finding-card__value">{metric}</span>
-        {metricLabel && <span class="finding-card__metric-label">{metricLabel}</span>}
-      </p>
-    )
-  }
+  <div class="finding-card__head">
+    <span class="finding-card__icon" aria-hidden="true">
+      <Icon name={metric ? 'chart' : 'lightbulb'} />
+    </span>
+    {
+      metric && (
+        <p class="finding-card__metric">
+          <span class="finding-card__value">{metric}</span>
+          {metricLabel && <span class="finding-card__metric-label">{metricLabel}</span>}
+        </p>
+      )
+    }
+  </div>
   <h3 class="finding-card__title">{title}</h3>
   <div class="finding-card__body">
     <slot />
@@ -39,9 +46,32 @@ const { title, metric, metricLabel } = Astro.props;
     gap: var(--space-3);
     padding: var(--space-5);
     border: var(--border);
+    border-top: 3px solid var(--orange);
     border-radius: var(--radius);
     background: var(--white);
     margin: 0 !important;
+  }
+
+  .finding-card__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .finding-card__icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: var(--radius-sm);
+    background: var(--orange-soft);
+    color: var(--orange-text);
+  }
+
+  .finding-card__icon :global(svg) {
+    width: 1.2rem;
+    height: 1.2rem;
   }
 
   .finding-card__metric {
@@ -51,11 +81,11 @@ const { title, metric, metricLabel } = Astro.props;
 
   .finding-card__value {
     font-family: var(--font-display);
-    font-size: var(--text-3xl);
-    font-weight: 800;
+    font-size: var(--text-2xl);
+    font-weight: 850;
     line-height: 1;
     letter-spacing: -0.02em;
-    color: var(--navy-800);
+    color: var(--ink);
     font-variant-numeric: tabular-nums;
   }
 
@@ -71,6 +101,10 @@ const { title, metric, metricLabel } = Astro.props;
     font-size: var(--text-lg);
     line-height: var(--leading-snug);
     margin: 0 !important;
+  }
+
+  .finding-card__title::before {
+    display: none !important;
   }
 
   .finding-card__body {

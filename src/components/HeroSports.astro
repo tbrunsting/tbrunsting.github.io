@@ -1,0 +1,147 @@
+---
+/**
+ * Multi-sport photographic composition for the homepage hero:
+ * four diagonal panels (soccer, American football, basketball, baseball)
+ * separated by thin orange rules, with a faint chart-bar overlay.
+ *
+ * Purely decorative — the headline carries the meaning — so the whole
+ * composition is hidden from assistive technology and images have empty alt.
+ * Photo sources and credits live in src/data/photos.ts.
+ */
+import { Image } from 'astro:assets';
+import { heroPhotos } from '@/data/photos';
+
+// Decorative bar heights (not data), echoing the mockup's background bars.
+const bars = [22, 34, 28, 46, 38, 58, 50, 66, 44, 72, 62, 80, 70, 88];
+---
+
+<div class="hero-sports" aria-hidden="true">
+  <div class="hero-sports__panels">
+    {
+      heroPhotos.map((photo, i) => (
+        <div class="hero-sports__panel" style={`--pos: ${photo.position}; --tone: ${photo.filter ?? 'none'}`}>
+          <Image
+            src={photo.src}
+            alt=""
+            widths={[320, 480, 720, 960]}
+            sizes="(min-width: 60rem) 24vw, 42vw"
+            loading="eager"
+            fetchpriority={i < 2 ? 'high' : 'auto'}
+          />
+        </div>
+      ))
+    }
+  </div>
+
+  <svg class="hero-sports__data" viewBox="0 0 700 400" preserveAspectRatio="none" focusable="false">
+    <g class="grid">
+      <line x1="0" y1="100" x2="700" y2="100" />
+      <line x1="0" y1="200" x2="700" y2="200" />
+      <line x1="0" y1="300" x2="700" y2="300" />
+    </g>
+    <g class="bars">
+      {bars.map((h, i) => <rect x={i * 50 + 10} y={400 - h * 2.6} width="22" height={h * 2.6} />)}
+    </g>
+    <polyline class="trend" points={bars.map((h, i) => `${i * 50 + 21},${400 - h * 2.6 - 18}`).join(' ')} />
+  </svg>
+
+  <div class="hero-sports__shade"></div>
+</div>
+
+<style>
+  .hero-sports {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--charcoal-950);
+  }
+
+  .hero-sports__panels {
+    position: absolute;
+    inset: 0 -7% 0 -2%;
+    display: flex;
+  }
+
+  .hero-sports__panel {
+    position: relative;
+    flex: 1 1 0;
+    overflow: hidden;
+    transform: skewX(-14deg);
+    border-left: 2px solid var(--orange);
+  }
+
+  .hero-sports__panel:first-child {
+    border-left-color: var(--orange-line);
+  }
+
+  .hero-sports__panel :global(img) {
+    position: absolute;
+    top: 0;
+    left: -45%;
+    width: 190%;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--pos);
+    transform: skewX(14deg);
+    filter: var(--tone);
+  }
+
+  /* Faint analytic overlay */
+  .hero-sports__data {
+    position: absolute;
+    inset: auto 0 0 0;
+    width: 100%;
+    height: 70%;
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+
+  .hero-sports__data .grid line {
+    stroke: rgb(255 255 255 / 0.07);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .hero-sports__data .bars rect {
+    fill: rgb(255 255 255 / 0.06);
+  }
+
+  .hero-sports__data .trend {
+    fill: none;
+    stroke: rgb(255 112 73 / 0.45);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* Blend into the charcoal text column and floor */
+  .hero-sports__shade {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, var(--charcoal) 0%, rgb(17 26 32 / 0.55) 16%, transparent 38%),
+      linear-gradient(0deg, rgb(11 17 21 / 0.75) 0%, transparent 35%),
+      linear-gradient(180deg, rgb(11 17 21 / 0.35) 0%, transparent 25%);
+  }
+
+  @media (max-width: 59.99rem) {
+    .hero-sports__panels {
+      inset: 0 -12% 0 -12%;
+    }
+
+    .hero-sports__panel {
+      transform: skewX(-12deg);
+    }
+
+    .hero-sports__panel :global(img) {
+      transform: skewX(12deg);
+    }
+
+    .hero-sports__shade {
+      background:
+        linear-gradient(0deg, var(--charcoal) 0%, transparent 45%),
+        linear-gradient(180deg, rgb(11 17 21 / 0.4) 0%, transparent 30%);
+    }
+  }
+</style>

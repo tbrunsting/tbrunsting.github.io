@@ -73,14 +73,45 @@ Export a 1200×630 PNG to `public/og/<slug>.png`, then set `ogImage: /og/<slug>.
 project frontmatter. The build fails if the file is missing, so a share image is never
 referenced before it exists.
 
-## Design tokens (provisional)
+## Design tokens ("Sports Editorial")
 
 | Token | Current value | File |
 |---|---|---|
-| Accent | `#e3a53b` amber (on navy) / `#8a5708` (accent text on light) | `src/styles/tokens.css` |
-| Display font | Archivo (variable) | `src/styles/tokens.css` + `global.css` import |
+| Orange accent | `#ff7049` (buttons, rules, labels on dark) / `#c2451f` (small orange text on warm white, for contrast) | `src/styles/tokens.css` |
+| Charcoal | `#111a20` primary, `#1b2830` secondary, `#0b1115` header/footer | same |
+| Warm white | `#faf8f3` / `#f3efe6` | same |
+| Text | `#17212b` main, `#55626c` muted; slate `#71808b` for decoration only | same |
+| Display font | Archivo (variable), weight 800–850 | `src/styles/tokens.css` + `global.css` import |
 | Body font | Inter (variable) | same |
-| Navy / off-white | `#0a1424`–`#34507a` / `#f7f5f0` | `src/styles/tokens.css` |
+
+Primary buttons use charcoal text on orange (6.4:1 contrast). White text on this orange
+would fail WCAG AA.
+
+The previous navy-and-gold design is saved as the Git tag `v1-navy-gold`
+(`git checkout v1-navy-gold` to look at it, `git checkout main` to come back).
+
+## Photography
+
+All photos are from Unsplash under the [Unsplash License](https://unsplash.com/license)
+(free to use, including commercially; attribution appreciated but not required).
+Credits appear in the site footer.
+
+| File | Used for | Photographer | Source |
+|---|---|---|---|
+| `src/assets/photos/hero-soccer.jpg` | Homepage hero | Konstantin Evdokimov | [Unsplash](https://unsplash.com/photos/white-and-black-soccer-ball-on-black-sand-JP0qiWQzjrg) |
+| `src/assets/photos/hero-football.jpg` | Homepage hero | Isaac Lind | [Unsplash](https://unsplash.com/photos/red-and-white-football-ball-lr-5SjADBXg) |
+| `src/assets/photos/hero-basketball.jpg` | Homepage hero | Kylie Osullivan | [Unsplash](https://unsplash.com/photos/brown-and-black-basketball-ball-BfaBLVCBTI8) |
+| `src/assets/photos/hero-baseball.jpg` | Homepage hero | Ben Hershey | [Unsplash](https://unsplash.com/photos/white-and-red-baseball-on-brown-soil-at-daytime-xJPCSJkxRys) |
+| `src/assets/photos/tme-hero.jpg` | Project hero | Timur Shakerzianov | [Unsplash](https://unsplash.com/photos/a-soccer-player-stands-on-the-ball-px_TLsiL28M) |
+| `src/assets/photos/tme-featured.jpg` | Featured card / project card | Amr Taha | [Unsplash](https://unsplash.com/photos/a-person-standing-on-top-of-a-soccer-ball-RuFuCkow5uw) |
+
+To swap a hero photo, replace the file (or change the import) in `src/data/photos.ts` and
+adjust its `position` so the ball stays in frame. Astro converts every photo to optimised
+WebP at several sizes during the build.
+
+Tool icons come from [Simple Icons](https://simpleicons.org) (CC0). Power BI has no
+licensed icon there (Microsoft logos were removed at Microsoft's request), so it uses a
+neutral chart glyph.
 
 To change a font, install the Fontsource package (e.g. `npm i @fontsource-variable/manrope`),
 swap the `@import` at the top of `global.css`, and update `--font-display` or `--font-body`.
@@ -91,5 +122,6 @@ swap the `@import` at the top of `global.css`, and update `--font-display` or `-
 - LinkedIn and email (marked "To be added")
 - Resume PDF (placeholder panel)
 - Transfer Market Efficiency: dashboard (temporary placeholder), case study (provisional intro only),
-  thumbnail, dashboard preview, publication date, project share image
+  dashboard preview screenshot, publication date, project share image. Its photos are licensed
+  editorial images, not dashboard screenshots.
 - Homepage "Analytics profile" and "Tools & skills" copy is draft wording, so please review it

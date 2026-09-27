@@ -44,31 +44,31 @@ const langLabel = labels[lang.toLowerCase()] ?? lang.toUpperCase();
       )
     }
   </figcaption>
-  <Code code={code} lang={highlightLang as any} theme="github-light" />
+  <Code code={code} lang={highlightLang as any} theme="github-dark" />
 </figure>
 
 <style>
   .code-block {
-    border: var(--border);
+    border: 1px solid var(--charcoal-3);
     border-radius: var(--radius);
     overflow: hidden;
-    background: var(--white);
+    background: var(--charcoal);
   }
 
   .code-block__bar {
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    padding: 0.55rem 1rem;
-    border-bottom: var(--border);
-    background: var(--paper);
+    padding: 0.6rem 1.1rem;
+    border-bottom: 1px solid var(--charcoal-3);
+    background: var(--charcoal-2);
     font-size: var(--text-xs);
   }
 
   .code-block__title {
     font-family: var(--font-mono);
     font-weight: 600;
-    color: var(--ink);
+    color: var(--on-dark);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -78,7 +78,7 @@ const langLabel = labels[lang.toLowerCase()] ?? lang.toUpperCase();
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--gray-500);
+    color: var(--orange);
   }
 
   .code-block__link {
@@ -87,7 +87,7 @@ const langLabel = labels[lang.toLowerCase()] ?? lang.toUpperCase();
     align-items: center;
     gap: 0.3rem;
     font-weight: 600;
-    color: var(--accent-strong);
+    color: var(--orange);
     text-decoration: none;
     white-space: nowrap;
   }

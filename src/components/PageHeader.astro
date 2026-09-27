@@ -1,5 +1,5 @@
 ---
-/** Navy page intro used by inner pages (Projects, About, Resume, Contact). */
+/** Compact dark editorial intro used by inner pages (Projects, About, Resume, Contact). */
 interface Props {
   eyebrow?: string;
   title: string;
@@ -9,7 +9,8 @@ interface Props {
 const { eyebrow, title, lede } = Astro.props;
 ---
 
-<header class="page-header surface-dark">
+<header class="page-header surface-dark grid-texture">
+  <span class="page-header__rule" aria-hidden="true"></span>
   <div class="container page-header__inner">
     {eyebrow && <p class="eyebrow">{eyebrow}</p>}
     <h1>{title}</h1>
@@ -20,12 +21,26 @@ const { eyebrow, title, lede } = Astro.props;
 
 <style>
   .page-header {
-    padding-block: clamp(3rem, 2rem + 4vw, 5.5rem) clamp(2.5rem, 2rem + 3vw, 4.5rem);
+    overflow: hidden;
+    padding-block: clamp(3rem, 2rem + 3.5vw, 5rem) clamp(2.5rem, 2rem + 2.5vw, 4rem);
+  }
+
+  .page-header__rule {
+    position: absolute;
+    top: -20%;
+    bottom: -20%;
+    right: 18%;
+    width: 2px;
+    background: var(--orange-line);
+    transform: rotate(22deg);
+    pointer-events: none;
   }
 
   .page-header__inner {
+    position: relative;
     display: grid;
     gap: var(--space-4);
+    justify-items: start;
   }
 
   h1 {
@@ -34,7 +49,7 @@ const { eyebrow, title, lede } = Astro.props;
   }
 
   .page-header__lede {
-    max-width: 40rem;
+    max-width: 38rem;
     font-size: var(--text-lg);
     color: var(--on-dark-muted);
   }

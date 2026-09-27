@@ -1,40 +1,26 @@
 /**
- * Tools and skills shown on the homepage and About page.
+ * Tools shown on the homepage and About page.
  *
  * Listed only because they are used in the current published work
  * (the Transfer Market Efficiency repository). Add to this list as new
  * projects use new tools.
  */
-export interface SkillGroup {
-  title: string;
-  description: string;
-  tools: string[];
+export interface Skill {
+  name: string;
+  /** Short description of what the tool is used for. */
+  role: string;
+  /**
+   * Brand icon key from Simple Icons (CC0), or 'chart' for a neutral icon.
+   * Power BI has no licensed icon in Simple Icons (Microsoft logos were
+   * removed at Microsoft's request), so it uses a generic chart glyph.
+   */
+  icon: 'python' | 'postgresql' | 'r' | 'git' | 'chart';
 }
 
-export const skillGroups: SkillGroup[] = [
-  {
-    title: 'Data acquisition & validation',
-    description: 'Collecting, freezing and checking source data before any analysis depends on it.',
-    tools: ['Python'],
-  },
-  {
-    title: 'Data modelling & warehousing',
-    description: 'Designing relational schemas and verifying results independently in SQL.',
-    tools: ['SQL', 'PostgreSQL'],
-  },
-  {
-    title: 'Statistical scoring',
-    description: 'Building reproducible scoring and modelling pipelines.',
-    tools: ['R'],
-  },
-  {
-    title: 'Visualisation & communication',
-    description: 'Turning validated results into dashboards and readable case studies.',
-    tools: ['Power BI'],
-  },
-  {
-    title: 'Workflow',
-    description: 'Versioned, documented, reproducible project work.',
-    tools: ['Git', 'GitHub'],
-  },
+export const skills: Skill[] = [
+  { name: 'Python', role: 'Data acquisition & validation', icon: 'python' },
+  { name: 'PostgreSQL', role: 'SQL data modelling & warehousing', icon: 'postgresql' },
+  { name: 'R', role: 'Statistical scoring & modelling', icon: 'r' },
+  { name: 'Power BI', role: 'Visualisation & communication', icon: 'chart' },
+  { name: 'Git & GitHub', role: 'Versioned, documented work', icon: 'git' },
 ];

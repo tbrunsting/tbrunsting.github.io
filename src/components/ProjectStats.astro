@@ -1,5 +1,8 @@
 ---
-/** Row of verified, project-specific headline figures. Renders nothing if empty. */
+/**
+ * Row of verified, project-specific headline figures, separated by thin
+ * vertical rules. Renders nothing if empty.
+ */
 interface Stat {
   label: string;
   value: string;
@@ -8,23 +11,26 @@ interface Stat {
 
 interface Props {
   stats: readonly Stat[];
+  /** 'dark' on charcoal heroes, 'light' on warm white. */
+  tone?: 'dark' | 'light';
+  /** Show the optional explanatory note under each label. */
+  showNotes?: boolean;
   caption?: string;
+  class?: string;
 }
 
-const { stats, caption } = Astro.props;
+const { stats, tone = 'dark', showNotes = true, caption, class: className } = Astro.props;
 ---
 
 {
   stats.length > 0 && (
-    <figure class="project-stats">
+    <figure class:list={['project-stats', `project-stats--${tone}`, className]}>
       <dl class="project-stats__list">
         {stats.map((stat) => (
           <div class="project-stats__item">
             <dt>{stat.label}</dt>
-            <dd>
-              <span class="project-stats__value">{stat.value}</span>
-              {stat.note && <span class="project-stats__note">{stat.note}</span>}
-            </dd>
+            <dd class="project-stats__value">{stat.value}</dd>
+            {showNotes && stat.note && <dd class="project-stats__note">{stat.note}</dd>}
           </div>
         ))}
       </dl>
@@ -34,50 +40,72 @@ const { stats, caption } = Astro.props;
 }
 
 <style>
+  .project-stats {
+    --rule: var(--border-dark);
+    --label: var(--on-dark-muted);
+    --value: var(--on-dark);
+  }
+
+  .project-stats--light {
+    --rule: var(--gray-200);
+    --label: var(--ink-muted);
+    --value: var(--ink);
+  }
+
   .project-stats__list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr));
-    border-top: 1px solid var(--border-dark);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
   }
 
   .project-stats__item {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
-    padding: var(--space-5) var(--space-4) var(--space-4) 0;
-    border-bottom: 1px solid var(--border-dark);
+    gap: 0.2rem;
+    padding: var(--space-2) var(--space-5);
+    border-left: 1px solid var(--rule);
   }
 
+  /* Value above label visually; the label stays first for screen readers. */
   dt {
-    font-size: var(--text-xs);
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--on-dark-muted);
-  }
-
-  dd {
-    display: grid;
-    gap: 0.1rem;
+    order: 2;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--label);
   }
 
   .project-stats__value {
+    order: 1;
     font-family: var(--font-display);
-    font-weight: 750;
+    font-weight: 800;
     font-size: var(--text-2xl);
-    line-height: 1.1;
-    color: var(--on-dark);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--value);
     font-variant-numeric: tabular-nums;
   }
 
   .project-stats__note {
+    order: 3;
     font-size: var(--text-xs);
-    color: var(--on-dark-muted);
+    line-height: 1.45;
+    color: var(--label);
+    opacity: 0.85;
+  }
+
+  @media (max-width: 36rem) {
+    .project-stats__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: var(--space-4);
+    }
+
+    .project-stats__item {
+      padding-inline: var(--space-4);
+    }
   }
 
   figcaption {
     margin-top: var(--space-3);
     font-size: var(--text-xs);
-    color: var(--on-dark-muted);
+    color: var(--label);
   }
 </style>

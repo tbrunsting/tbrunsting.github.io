@@ -1,7 +1,7 @@
 ---
 /**
- * Responsive grid of project cards. Renders nothing when there are no
- * projects, so callers decide what (if anything) to show instead.
+ * Project list. 'grid' lays out stacked cards; 'list' stacks wide editorial
+ * cards (Projects page). Renders nothing when there are no projects.
  */
 import ProjectCard from './ProjectCard.astro';
 import type { Project } from '@/lib/projects';
@@ -9,17 +9,18 @@ import type { Project } from '@/lib/projects';
 interface Props {
   projects: Project[];
   headingLevel?: 'h2' | 'h3';
+  layout?: 'grid' | 'list';
 }
 
-const { projects, headingLevel = 'h3' } = Astro.props;
+const { projects, headingLevel = 'h3', layout = 'grid' } = Astro.props;
 ---
 
 {
   projects.length > 0 && (
-    <ul class="project-grid" role="list">
+    <ul class:list={['project-grid', `project-grid--${layout}`]} role="list">
       {projects.map((project) => (
         <li>
-          <ProjectCard project={project} headingLevel={headingLevel} />
+          <ProjectCard project={project} headingLevel={headingLevel} variant={layout === 'list' ? 'wide' : 'stacked'} />
         </li>
       ))}
     </ul>
@@ -29,9 +30,16 @@ const { projects, headingLevel = 'h3' } = Astro.props;
 <style>
   .project-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
     gap: var(--space-5);
     list-style: none;
     padding: 0;
+  }
+
+  .project-grid--grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  }
+
+  .project-grid--list {
+    grid-template-columns: 1fr;
   }
 </style>

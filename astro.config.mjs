@@ -29,8 +29,8 @@ export default defineConfig({
   ],
   markdown: {
     shikiConfig: {
-      // Light theme to match the light long-form reading surface.
-      theme: 'github-light',
+      // Dark theme; the block background is overridden to charcoal in prose.css.
+      theme: 'github-dark',
       wrap: false,
     },
   },

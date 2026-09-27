@@ -19,6 +19,10 @@ const imageWithAlt = (image: SchemaContext['image']) =>
   z.object({
     src: image(),
     alt: z.string().min(1, { error: 'Images need descriptive alt text.' }),
+    /** Optional photo credit, e.g. 'Photo: Jane Doe / Unsplash'. */
+    credit: z.string().optional(),
+    /** Optional CSS object-position for cropping, e.g. '65% 70%'. */
+    position: z.string().optional(),
   });
 
 const projects = defineCollection({

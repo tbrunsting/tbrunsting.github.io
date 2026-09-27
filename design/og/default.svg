@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
     <radialGradient id="glow" cx="1" cy="0" r="0.9">
-      <stop offset="0" stop-color="#e3a53b" stop-opacity="0.16"/>
-      <stop offset="1" stop-color="#e3a53b" stop-opacity="0"/>
+      <stop offset="0" stop-color="#ff7049" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#ff7049" stop-opacity="0"/>
     </radialGradient>
   </defs>
-  <rect width="1200" height="630" fill="#0a1424"/>
+  <rect width="1200" height="630" fill="#111a20"/>
   <rect width="1200" height="630" fill="url(#glow)"/>
 
   <!-- Subtle pitch lines -->
@@ -18,12 +18,12 @@
   </g>
 
   <!-- Monogram -->
-  <rect x="80" y="80" width="64" height="64" rx="10" fill="none" stroke="#e3a53b" stroke-width="3"/>
-  <text x="112" y="123" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-weight="800" font-size="26" fill="#e3a53b">TB</text>
+  <rect x="80" y="80" width="64" height="64" rx="10" fill="none" stroke="#ff7049" stroke-width="3"/>
+  <text x="112" y="123" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-weight="800" font-size="26" fill="#ff7049">TB</text>
 
-  <text x="80" y="300" font-family="Segoe UI, Arial, sans-serif" font-weight="600" font-size="22" letter-spacing="4" fill="#e3a53b">SPORTS ANALYTICS</text>
-  <text x="80" y="378" font-family="Segoe UI, Arial, sans-serif" font-weight="800" font-size="68" fill="#f5f3ee">Turning sports data</text>
-  <text x="80" y="458" font-family="Segoe UI, Arial, sans-serif" font-weight="800" font-size="68" fill="#f5f3ee">into insight.</text>
+  <text x="80" y="300" font-family="Segoe UI, Arial, sans-serif" font-weight="600" font-size="22" letter-spacing="4" fill="#ff7049">SPORTS ANALYTICS</text>
+  <text x="80" y="378" font-family="Segoe UI, Arial, sans-serif" font-weight="800" font-size="68" fill="#f6f3ec">Turning sports data</text>
+  <text x="80" y="458" font-family="Segoe UI, Arial, sans-serif" font-weight="800" font-size="68" fill="#f6f3ec">into <tspan fill="#ff7049">insight.</tspan></text>
 
-  <text x="80" y="560" font-family="Segoe UI, Arial, sans-serif" font-weight="600" font-size="26" fill="#aab4c5">Tyler Brunsting</text>
+  <text x="80" y="560" font-family="Segoe UI, Arial, sans-serif" font-weight="600" font-size="26" fill="#a7b2ba">Tyler Brunsting</text>
 </svg>

@@ -1,4 +1,10 @@
 ---
+/**
+ * Project card.
+ *  - 'stacked' (default): image on top — used in grids.
+ *  - 'wide': image left, text right — used on the Projects page.
+ * The whole card is clickable through a single stretched link.
+ */
 import ProjectMedia from './ProjectMedia.astro';
 import ToolList from './ToolList.astro';
 import Icon from './Icon.astro';
@@ -7,31 +13,39 @@ import { projectUrl, statusLabel, type Project } from '@/lib/projects';
 interface Props {
   project: Project;
   headingLevel?: 'h2' | 'h3';
+  variant?: 'stacked' | 'wide';
 }
 
-const { project, headingLevel: Heading = 'h3' } = Astro.props;
+const { project, headingLevel: Heading = 'h3', variant = 'stacked' } = Astro.props;
 const { title, sport, timePeriod, summary, tools, status } = project.data;
 const href = projectUrl(project);
+const sizes = variant === 'wide' ? '(min-width: 48rem) 22rem, 100vw' : '(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw';
 ---
 
-<article class="project-card">
-  <ProjectMedia project={project} sizes="(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw" />
+<article class:list={['project-card', `project-card--${variant}`]}>
+  <div class="project-card__media">
+    <ProjectMedia project={project} sizes={sizes} />
+  </div>
   <div class="project-card__body">
-    <p class="project-card__meta">
-      <span>{sport}</span>
-      <span aria-hidden="true">·</span>
-      <span>{timePeriod}</span>
-      {status !== 'published' && <span class="badge project-card__status">{statusLabel[status]}</span>}
-    </p>
+    <div class="project-card__top">
+      <p class="project-card__meta">
+        {sport}
+        <span aria-hidden="true">·</span>
+        {timePeriod}
+      </p>
+      {status !== 'published' && <span class="badge badge--accent project-card__status">{statusLabel[status]}</span>}
+    </div>
     <Heading class="project-card__title">
       <a href={href}>{title}</a>
     </Heading>
     <p class="project-card__summary">{summary}</p>
-    <ToolList tools={tools} size="sm" />
-    <span class="project-card__cta" aria-hidden="true">
-      View Project
-      <Icon name="arrow-right" />
-    </span>
+    <div class="project-card__bottom">
+      <ToolList tools={tools} size="sm" />
+      <span class="project-card__cta" aria-hidden="true">
+        <span class="project-card__cta-text">View Project</span>
+        <Icon name="arrow-right" />
+      </span>
+    </div>
   </div>
 </article>
 
@@ -41,7 +55,8 @@ const href = projectUrl(project);
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--white);
+    background: var(--paper);
+    color: var(--ink);
     border: var(--border);
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -54,9 +69,12 @@ const href = projectUrl(project);
 
   .project-card:hover,
   .project-card:focus-within {
-    border-color: var(--gray-400);
-    box-shadow: var(--shadow);
-    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+  }
+
+  .project-card:hover :global(.project-media__img) {
+    transform: scale(1.04);
   }
 
   .project-card__body {
@@ -67,22 +85,31 @@ const href = projectUrl(project);
     padding: var(--space-5);
   }
 
-  .project-card__meta {
+  .project-card__top {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.45rem;
-    font-size: var(--text-xs);
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--accent-strong);
+    justify-content: space-between;
+    gap: var(--space-2);
   }
 
-  .project-card__status {
-    margin-left: auto;
-    text-transform: none;
-    letter-spacing: 0.02em;
+  /* Cards are always a light surface, even on a dark section
+     (tool pills follow via the --pill-* variables in global.css). */
+  .project-card .badge--accent {
+    background: transparent;
+    border-color: var(--orange-text);
+    color: var(--orange-text);
+  }
+
+  .project-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--orange-text);
   }
 
   .project-card__title {
@@ -99,6 +126,7 @@ const href = projectUrl(project);
     content: '';
     position: absolute;
     inset: 0;
+    z-index: 1;
     border-radius: inherit;
   }
 
@@ -107,7 +135,7 @@ const href = projectUrl(project);
   }
 
   .project-card:has(.project-card__title a:focus-visible) {
-    outline: 2px solid var(--accent-strong);
+    outline: 2px solid var(--orange);
     outline-offset: 3px;
   }
 
@@ -115,26 +143,85 @@ const href = projectUrl(project);
     color: var(--ink-muted);
     font-size: var(--text-sm);
     line-height: 1.6;
+    max-width: 44rem;
+  }
+
+  .project-card__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: auto;
+    padding-top: var(--space-2);
   }
 
   .project-card__cta {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    margin-top: auto;
-    padding-top: var(--space-2);
     font-size: var(--text-sm);
-    font-weight: 650;
-    color: var(--ink);
+    font-weight: 700;
+    color: var(--orange-text);
   }
 
   .project-card__cta :global(svg) {
-    width: 1rem;
-    height: 1rem;
+    width: 1.35rem;
+    height: 1.35rem;
     transition: transform var(--duration) var(--ease);
   }
 
   .project-card:hover .project-card__cta :global(svg) {
-    transform: translateX(3px);
+    transform: translateX(4px);
+  }
+
+  /* ----- Wide variant ----- */
+  @media (min-width: 48rem) {
+    .project-card--wide {
+      flex-direction: row;
+      padding: var(--space-4);
+      gap: var(--space-2);
+    }
+
+    .project-card--wide .project-card__media {
+      flex: 0 0 min(34%, 22rem);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .project-card--wide .project-card__media {
+      position: relative;
+    }
+
+    .project-card--wide :global(.project-media) {
+      position: absolute;
+      inset: 0;
+      aspect-ratio: auto;
+    }
+
+    .project-card--wide :global(.project-media__img) {
+      position: absolute;
+      inset: 0;
+    }
+
+    .project-card--wide .project-card__body {
+      min-height: 14rem;
+    }
+
+    .project-card--wide .project-card__body {
+      padding: var(--space-3) var(--space-4) var(--space-2) var(--space-5);
+    }
+
+    .project-card--wide .project-card__title {
+      font-size: var(--text-2xl);
+    }
+
+    .project-card--wide .project-card__cta-text {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+    }
   }
 </style>

@@ -32,10 +32,22 @@ stats:
   - label: Club-seasons
     value: '684'
 githubUrl: https://github.com/tbrunsting/Transfer-Market-Efficiency
+# Editorial photography (Unsplash License). These are mood images, not
+# dashboard screenshots; the dashboard preview is added separately below.
+thumbnail:
+  src: ../../assets/photos/tme-featured.jpg
+  alt: A player resting one foot on a black-and-white football on the touchline of an artificial pitch
+  credit: Photo by Amr Taha on Unsplash
+  position: 50% 58%
+heroImage:
+  src: ../../assets/photos/tme-hero.jpg
+  alt: A player's boot resting on a football on a floodlit pitch at dusk
+  credit: Photo by Timur Shakerzianov on Unsplash
+  position: 70% 62%
 dashboard:
   status: in-development
-# thumbnail, heroImage, dashboard.preview, dashboard.url, dashboard.embedUrl,
-# publishedAt and ogImage are intentionally omitted until real assets exist.
+# dashboard.preview, dashboard.url, dashboard.embedUrl, publishedAt and ogImage
+# are intentionally omitted until real assets exist.
 ---
 
 <PlaceholderNote label="Provisional introduction" title="The full case study is being written">
@@ -57,11 +69,11 @@ The project runs as a reproducible pipeline, from frozen, checksummed source dat
 <DataPipeline
   caption="Project pipeline, as documented in the repository."
   steps={[
-    { label: 'Ingest & validate', detail: 'Frozen, checksummed sources and rule-based consistency checks', tools: ['Python'] },
-    { label: 'Warehouse', detail: 'Relational schema at one row per transfer event', tools: ['PostgreSQL'] },
-    { label: 'Score', detail: 'Player quality, pillar scores and a composite efficiency index', tools: ['R', 'SQL checks'] },
-    { label: 'Present', detail: 'Presentation views shaped for the dashboard', tools: ['SQL'] },
-    { label: 'Dashboard', detail: 'League-wide and club-level views, in development', tools: ['Power BI'] },
+    { label: 'Ingest & validate', icon: 'ingest', detail: 'Frozen, checksummed sources and rule-based consistency checks', tools: ['Python'] },
+    { label: 'Warehouse', icon: 'database', detail: 'Relational schema at one row per transfer event', tools: ['PostgreSQL'] },
+    { label: 'Score', icon: 'sigma', detail: 'Player quality, pillar scores and a composite efficiency index', tools: ['R', 'SQL checks'] },
+    { label: 'Present', icon: 'layers', detail: 'Presentation views shaped for the dashboard', tools: ['SQL'] },
+    { label: 'Dashboard', icon: 'chart', detail: 'League-wide and club-level views, in development', tools: ['Power BI'] },
   ]}
 />
 

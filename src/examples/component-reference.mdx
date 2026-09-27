@@ -80,10 +80,10 @@ CALCULATE (
 <DataPipeline
   caption="Example pipeline diagram."
   steps={[
-    { label: 'Collect', detail: 'Source data is fetched and frozen', tools: ['Python'] },
-    { label: 'Model', detail: 'Loaded into a relational schema', tools: ['SQL'] },
-    { label: 'Score', detail: 'Metrics computed and verified', tools: ['R'] },
-    { label: 'Present', detail: 'Published to a dashboard', tools: ['Power BI'] },
+    { label: 'Collect', icon: 'ingest', detail: 'Source data is fetched and frozen', tools: ['Python'] },
+    { label: 'Model', icon: 'database', detail: 'Loaded into a relational schema', tools: ['SQL'] },
+    { label: 'Score', icon: 'sigma', detail: 'Metrics computed and verified', tools: ['R'] },
+    { label: 'Present', icon: 'chart', detail: 'Published to a dashboard', tools: ['Power BI'] },
   ]}
 />
 

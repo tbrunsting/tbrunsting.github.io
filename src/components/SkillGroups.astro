@@ -1,54 +1,115 @@
 ---
-import { skillGroups } from '@/data/skills';
-import ToolList from './ToolList.astro';
+/** Tool cards with brand icons (Simple Icons, CC0), rendered at build time. */
+import { siPython, siPostgresql, siR, siGit } from 'simple-icons';
+import { skills } from '@/data/skills';
+import Icon from './Icon.astro';
 
 interface Props {
   headingLevel?: 'h3' | 'h4';
 }
 
 const { headingLevel: Heading = 'h3' } = Astro.props;
+
+const brands = {
+  python: siPython,
+  postgresql: siPostgresql,
+  r: siR,
+  git: siGit,
+} as const;
 ---
 
-<ul class="skill-groups" role="list">
+<ul class="tool-cards" role="list">
   {
-    skillGroups.map((group) => (
-      <li class="skill-group">
-        <Heading class="skill-group__title">{group.title}</Heading>
-        <p class="skill-group__desc">{group.description}</p>
-        <ToolList tools={group.tools} size="sm" label={`${group.title} tools`} />
-      </li>
-    ))
+    skills.map((skill) => {
+      const brand = skill.icon === 'chart' ? null : brands[skill.icon];
+      return (
+        <li class="tool-card">
+          <span class="tool-card__icon" style={brand ? `--brand: #${brand.hex}` : undefined}>
+            {brand ? (
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d={brand.path} />
+              </svg>
+            ) : (
+              <Icon name="chart" class="tool-card__glyph" />
+            )}
+          </span>
+          <Heading class="tool-card__name">{skill.name}</Heading>
+          <p class="tool-card__role">{skill.role}</p>
+        </li>
+      );
+    })
   }
 </ul>
 
 <style>
-  .skill-groups {
+  .tool-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11.5rem), 1fr));
     gap: var(--space-4);
     list-style: none;
     padding: 0;
   }
 
-  .skill-group {
+  @media (min-width: 68rem) {
+    .tool-cards {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+
+  .tool-card {
     display: grid;
+    justify-items: center;
     align-content: start;
-    gap: var(--space-3);
-    padding: var(--space-5);
+    gap: var(--space-2);
+    padding: var(--space-6) var(--space-4) var(--space-5);
+    text-align: center;
     background: var(--white);
     border: var(--border);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
+    transition:
+      border-color var(--duration) var(--ease),
+      box-shadow var(--duration) var(--ease),
+      transform var(--duration) var(--ease);
   }
 
-  .skill-group__title {
-    font-size: var(--text-base);
-    font-weight: 700;
-    line-height: var(--leading-snug);
+  .tool-card:hover {
+    border-color: var(--gray-400);
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
   }
 
-  .skill-group__desc {
+  .tool-card__icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: var(--space-2);
+    color: var(--brand, var(--orange-text));
+  }
+
+  .tool-card__icon svg {
+    width: 2.6rem;
+    height: 2.6rem;
+    fill: currentColor;
+  }
+
+  .tool-card__icon :global(.tool-card__glyph) {
+    width: 2.6rem;
+    height: 2.6rem;
+    fill: none;
+    stroke-width: 2;
+  }
+
+  .tool-card__name {
+    font-size: var(--text-lg);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .tool-card__role {
     font-size: var(--text-sm);
+    line-height: 1.45;
     color: var(--ink-muted);
-    line-height: 1.55;
+    max-width: 14rem;
   }
 </style>

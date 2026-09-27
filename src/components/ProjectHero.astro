@@ -1,5 +1,10 @@
 ---
-/** "Project Snapshot" hero: title, question, context, tools, actions and stats. */
+/**
+ * "Project Snapshot" hero: cinematic photo to the right (optional heroImage),
+ * title, the exact research question, context, tools, actions and verified
+ * stats. Text always sits on a solid-to-transparent charcoal overlay.
+ */
+import { Image } from 'astro:assets';
 import ToolList from './ToolList.astro';
 import ProjectStats from './ProjectStats.astro';
 import Icon from './Icon.astro';
@@ -11,11 +16,35 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { title, sport, category, timePeriod, question, tools, stats, status, githubUrl, dashboard, publishedAt, updatedAt } =
+const { title, sport, category, timePeriod, question, tools, stats, status, githubUrl, dashboard, publishedAt, updatedAt, heroImage } =
   project.data;
+
+// Decorative bar heights (not data).
+const bars = [30, 44, 38, 56, 48, 66, 58, 74, 64, 82];
 ---
 
 <header class="project-hero surface-darker">
+  {
+    heroImage && (
+      <div class="project-hero__media" aria-hidden="true">
+        <Image
+          src={heroImage.src}
+          alt=""
+          widths={[800, 1200, 1600, 2000]}
+          sizes="(min-width: 60rem) 70vw, 100vw"
+          loading="eager"
+          fetchpriority="high"
+          style={heroImage.position ? `object-position: ${heroImage.position}` : undefined}
+        />
+      </div>
+    )
+  }
+  <svg class="project-hero__data" viewBox="0 0 500 300" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    {bars.map((h, i) => <rect x={i * 50 + 12} y={300 - h * 3} width="20" height={h * 3} />)}
+  </svg>
+  <span class="project-hero__rule" aria-hidden="true"></span>
+  <div class="project-hero__shade" aria-hidden="true"></div>
+
   <div class="container project-hero__inner">
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <ol>
@@ -28,92 +57,151 @@ const { title, sport, category, timePeriod, question, tools, stats, status, gith
       <p class="project-hero__meta">
         <span class="eyebrow">{sport}</span>
         {category && <span class="badge">{category}</span>}
-        <span class="badge badge--accent">
-          <span class="badge__dot" aria-hidden="true" />
-          {statusLabel[status]}
-        </span>
+        <span class="badge badge--accent">{statusLabel[status]}</span>
       </p>
       <h1>{title}</h1>
       <div class="project-hero__question">
         <p class="project-hero__question-label">The question</p>
         <p class="project-hero__question-text">{question}</p>
       </div>
-    </div>
 
-    <dl class="project-hero__facts">
-      <div>
-        <dt>Sport</dt>
-        <dd>{sport}</dd>
-      </div>
-      <div>
-        <dt>Period</dt>
-        <dd>{timePeriod}</dd>
-      </div>
-      {
-        publishedAt && (
-          <div>
-            <dt>Published</dt>
-            <dd>
-              <time datetime={publishedAt.toISOString()}>{formatDate(publishedAt)}</time>
-            </dd>
-          </div>
-        )
-      }
-      {
-        updatedAt && (
-          <div>
-            <dt>Updated</dt>
-            <dd>
-              <time datetime={updatedAt.toISOString()}>{formatDate(updatedAt)}</time>
-            </dd>
-          </div>
-        )
-      }
-      {
-        tools.length > 0 && (
-          <div class="project-hero__tools">
-            <dt>Tools</dt>
-            <dd>
-              <ToolList tools={tools} size="sm" />
-            </dd>
-          </div>
-        )
-      }
-    </dl>
-
-    {
-      (githubUrl || dashboard.url) && (
-        <div class="btn-row">
-          {dashboard.url && (
-            <a class="btn btn--primary" href={dashboard.url} target="_blank" rel="noopener">
-              <Icon name="chart" />
-              Open Interactive Dashboard
-              <span class="visually-hidden">(opens in a new tab)</span>
-            </a>
-          )}
-          {githubUrl && (
-            <a class="btn btn--ghost" href={githubUrl} target="_blank" rel="noopener">
+      <div class="btn-row">
+        {
+          githubUrl && (
+            <a class="btn btn--primary" href={githubUrl} target="_blank" rel="noopener">
               <Icon name="github" />
               View source on GitHub
               <span class="visually-hidden">(opens in a new tab)</span>
             </a>
-          )}
-        </div>
-      )
-    }
+          )
+        }
+        {
+          dashboard.url ? (
+            <a class="btn btn--ghost" href={dashboard.url} target="_blank" rel="noopener">
+              <Icon name="chart" />
+              Open Interactive Dashboard
+              <span class="visually-hidden">(opens in a new tab)</span>
+            </a>
+          ) : (
+            <span class="btn btn--ghost" aria-disabled="true">
+              <Icon name="chart" />
+              Dashboard coming soon
+            </span>
+          )
+        }
+      </div>
+    </div>
 
-    <ProjectStats stats={stats} />
+    <div class="project-hero__foot">
+      <dl class="project-hero__facts">
+        <div>
+          <dt>Sport</dt>
+          <dd>{sport}</dd>
+        </div>
+        <div>
+          <dt>Period</dt>
+          <dd>{timePeriod}</dd>
+        </div>
+        {
+          publishedAt && (
+            <div>
+              <dt>Published</dt>
+              <dd>
+                <time datetime={publishedAt.toISOString()}>{formatDate(publishedAt)}</time>
+              </dd>
+            </div>
+          )
+        }
+        {
+          updatedAt && (
+            <div>
+              <dt>Updated</dt>
+              <dd>
+                <time datetime={updatedAt.toISOString()}>{formatDate(updatedAt)}</time>
+              </dd>
+            </div>
+          )
+        }
+        {
+          tools.length > 0 && (
+            <div class="project-hero__tools">
+              <dt>Tools</dt>
+              <dd>
+                <ToolList tools={tools} size="sm" />
+              </dd>
+            </div>
+          )
+        }
+      </dl>
+
+      <ProjectStats stats={stats} tone="dark" />
+    </div>
   </div>
 </header>
 
 <style>
   .project-hero {
-    padding-block: var(--space-6) clamp(2.5rem, 2rem + 3vw, 4rem);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding-block: var(--space-5) clamp(2.5rem, 2rem + 3vw, 4rem);
+  }
+
+  .project-hero__media {
+    position: absolute;
+    inset: 0 0 14% 30%;
+    z-index: -3;
+    mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
+  }
+
+  .project-hero__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.92) contrast(1.12) saturate(0.95);
+  }
+
+  .project-hero__data {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 55%;
+    height: 55%;
+    z-index: -2;
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  .project-hero__data rect {
+    fill: rgb(255 255 255 / 0.05);
+  }
+
+  .project-hero__shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(90deg, var(--charcoal-950) 0%, var(--charcoal-950) 30%, rgb(11 17 21 / 0.8) 46%, rgb(11 17 21 / 0.1) 72%, rgb(11 17 21 / 0.2) 100%),
+      linear-gradient(0deg, var(--charcoal-950) 0%, rgb(11 17 21 / 0.55) 18%, transparent 40%);
+  }
+
+  /* Orange editorial wedge on the right edge */
+  .project-hero__rule {
+    position: absolute;
+    top: 0;
+    right: 7%;
+    width: 2px;
+    height: 70%;
+    background: var(--orange);
+    transform: rotate(24deg);
+    transform-origin: top right;
+    opacity: 0.85;
+    z-index: -1;
   }
 
   .project-hero__inner {
     display: grid;
-    gap: var(--space-6);
+    gap: var(--space-7);
   }
 
   .breadcrumb ol {
@@ -143,7 +231,9 @@ const { title, sport, category, timePeriod, question, tools, stats, status, gith
   .project-hero__head {
     display: grid;
     gap: var(--space-5);
-    max-width: 56rem;
+    max-width: 50rem;
+    justify-items: start;
+    margin-top: var(--space-4);
   }
 
   .project-hero__meta {
@@ -155,54 +245,74 @@ const { title, sport, category, timePeriod, question, tools, stats, status, gith
 
   h1 {
     font-size: var(--text-4xl);
-    font-weight: 800;
-    letter-spacing: -0.03em;
+    font-weight: 850;
   }
 
   .project-hero__question {
-    border-left: 3px solid var(--accent);
+    border-left: 3px solid var(--orange);
     padding-left: var(--space-5);
     display: grid;
-    gap: var(--space-1);
+    gap: var(--space-2);
   }
 
   .project-hero__question-label {
     font-size: var(--text-xs);
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
-    color: var(--on-dark-muted);
+    color: var(--orange);
   }
 
   .project-hero__question-text {
     font-family: var(--font-display);
     font-size: var(--text-xl);
-    font-weight: 550;
-    line-height: var(--leading-snug);
-    max-width: 44rem;
+    font-weight: 600;
+    line-height: 1.35;
+    max-width: 40rem;
+  }
+
+  .project-hero__foot {
+    display: grid;
+    gap: var(--space-6);
   }
 
   .project-hero__facts {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-5) var(--space-7);
+    gap: var(--space-5) var(--space-8);
+    padding-bottom: var(--space-5);
+    border-bottom: 1px solid var(--border-dark);
   }
 
   .project-hero__facts div {
     display: grid;
-    gap: var(--space-1);
+    gap: var(--space-2);
     align-content: start;
   }
 
   .project-hero__facts dt {
     font-size: var(--text-xs);
-    font-weight: 600;
-    letter-spacing: 0.06em;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--on-dark-muted);
   }
 
   .project-hero__facts dd {
-    font-weight: 600;
+    font-weight: 700;
+  }
+
+  @media (max-width: 59.99rem) {
+    .project-hero__media {
+      inset: 0;
+    }
+
+    .project-hero__shade {
+      background: linear-gradient(0deg, var(--charcoal-950) 35%, rgb(11 17 21 / 0.82) 60%, rgb(11 17 21 / 0.6) 100%);
+    }
+
+    .project-hero__rule {
+      display: none;
+    }
   }
 </style>

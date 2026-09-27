@@ -5,8 +5,9 @@ import ProjectGrid from '@/components/ProjectGrid.astro';
 import { getProjects } from '@/lib/projects';
 
 const projects = await getProjects();
-const sports = [...new Set(projects.map((p) => p.data.sport))];
 const countLabel = `${projects.length} ${projects.length === 1 ? 'project' : 'projects'}`;
+// Sport filters are intentionally omitted until the collection covers more
+// than one sport — a row of empty categories would be misleading.
 ---
 
 <BaseLayout
@@ -16,53 +17,41 @@ const countLabel = `${projects.length} ${projects.length === 1 ? 'project' : 'pr
   <PageHeader
     eyebrow="Projects"
     title="Analytical projects"
-    lede="Each project pairs a dashboard with a technical case study covering the data, the methods and the decisions behind the results."
+    lede="Exploring data-driven questions across professional and collegiate sports. Each project pairs a dashboard with a technical case study."
   />
 
-  <section class="section surface-light" aria-labelledby="project-list-title">
+  <section class="projects surface-dark" aria-labelledby="project-list-title">
     <div class="container">
-      <div class="list-head">
+      <div class="projects__head">
         <h2 id="project-list-title" class="visually-hidden">All projects</h2>
-        <p class="list-head__count">{countLabel}</p>
-        {
-          sports.length > 0 && (
-            <ul class="list-head__sports" aria-label="Sports covered">
-              {sports.map((s) => (
-                <li class="badge">{s}</li>
-              ))}
-            </ul>
-          )
-        }
+        <p class="projects__count">{countLabel}</p>
       </div>
 
-      <ProjectGrid projects={projects} headingLevel="h3" />
+      <ProjectGrid projects={projects} headingLevel="h3" layout="list" />
 
-      {projects.length === 0 && <p class="muted">Projects will appear here once they are added.</p>}
+      {projects.length === 0 && <p class="projects__empty">Projects will appear here once they are added.</p>}
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .list-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-3);
-    margin-bottom: var(--space-6);
+  .projects {
+    padding-block: var(--space-4) var(--section-pad);
   }
 
-  .list-head__count {
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--ink-muted);
-    margin-right: var(--space-2);
+  .projects__head {
+    margin-bottom: var(--space-4);
   }
 
-  .list-head__sports {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    list-style: none;
-    padding: 0;
+  .projects__count {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--on-dark-muted);
+  }
+
+  .projects__empty {
+    color: var(--on-dark-muted);
   }
 </style>

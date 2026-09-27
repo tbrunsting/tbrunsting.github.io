@@ -1,4 +1,5 @@
 ---
+/** Concise editorial call to action on a dark band. */
 import { withBase } from '@/lib/paths';
 import Icon from './Icon.astro';
 
@@ -8,49 +9,71 @@ interface Props {
 }
 
 const {
-  title = 'Questions about a project?',
-  text = 'I’m always glad to talk through methodology, data sources or ideas for new sports analytics questions.',
+  title = 'Let’s turn a sports question into a project.',
+  text = 'Questions about methodology, data sources or new ideas for sports analytics are always welcome.',
 } = Astro.props;
 ---
 
-<section class="contact-cta surface-dark section" aria-labelledby="contact-cta-title">
-  <div class="container contact-cta__inner">
-    <div>
-      <p class="eyebrow">Contact</p>
-      <h2 id="contact-cta-title">{title}</h2>
-      <p class="contact-cta__text">{text}</p>
+<section class="cta surface-darker" aria-labelledby="cta-title">
+  <div class="container cta__inner">
+    <div class="cta__copy">
+      <h2 id="cta-title">{title}</h2>
+      <p>{text}</p>
     </div>
-    <div class="btn-row">
-      <a class="btn btn--primary" href={withBase('/contact/')}>
-        Get in touch
-        <Icon name="arrow-right" />
-      </a>
-    </div>
+    <a class="btn btn--primary" href={withBase('/contact/')}>
+      Get in touch
+      <Icon name="arrow-right" />
+    </a>
   </div>
 </section>
 
 <style>
-  .contact-cta__inner {
+  .cta {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(2.75rem, 2rem + 3vw, 4.25rem);
+    border-top: 1px solid var(--border-dark);
+  }
+
+  /* Thin diagonal orange rule */
+  .cta::after {
+    content: '';
+    position: absolute;
+    top: -20%;
+    bottom: -20%;
+    right: 12%;
+    width: 2px;
+    background: var(--orange-line);
+    transform: rotate(24deg);
+    pointer-events: none;
+  }
+
+  .cta__inner {
+    position: relative;
+    z-index: 1;
     display: grid;
-    gap: var(--space-6);
-    align-items: end;
+    gap: var(--space-5);
+    align-items: center;
   }
 
   @media (min-width: 52rem) {
-    .contact-cta__inner {
+    .cta__inner {
       grid-template-columns: 1fr auto;
+      gap: var(--space-7);
     }
   }
 
-  h2 {
-    font-size: var(--text-3xl);
-    margin-top: var(--space-3);
+  .cta__copy {
+    display: grid;
+    gap: var(--space-2);
   }
 
-  .contact-cta__text {
-    margin-top: var(--space-3);
-    max-width: 36rem;
+  h2 {
+    font-size: var(--text-2xl);
+  }
+
+  p {
     color: var(--on-dark-muted);
-    font-size: var(--text-lg);
+    max-width: 38rem;
   }
 </style>
