@@ -2,7 +2,10 @@
 /**
  * Visual for project cards and the featured project.
  * Priority: real dashboard screenshot → thumbnail photo → neutral branded cover.
- * The cover never imitates a dashboard or shows data.
+ *
+ * Dashboard screenshots are always shown whole, at their own aspect ratio,
+ * with no crop or colour filter. Photos may be cropped for mood.
+ * The neutral cover never imitates a dashboard or shows data.
  */
 import { Image } from 'astro:assets';
 import type { Project } from '@/lib/projects';
@@ -15,11 +18,15 @@ interface Props {
 
 const { project, sizes = '(min-width: 64rem) 36rem, 100vw', eager = false } = Astro.props;
 const { dashboard, thumbnail, sport } = project.data;
+const isScreenshot = Boolean(dashboard.preview);
 const media = dashboard.preview ?? thumbnail;
-const position = media && 'position' in media ? media.position : undefined;
+const position = !isScreenshot && thumbnail?.position ? thumbnail.position : undefined;
 ---
 
-<div class="project-media">
+<div
+  class:list={['project-media', { 'project-media--screenshot': isScreenshot }]}
+  style={isScreenshot && media ? `--ratio: ${media.src.width} / ${media.src.height}` : undefined}
+>
   {
     media ? (
       <Image
@@ -56,6 +63,18 @@ const position = media && 'position' in media ? media.position : undefined;
     height: 100%;
     object-fit: cover;
     transition: transform 500ms var(--ease);
+  }
+
+  /* Screenshots: natural aspect ratio, never cropped or filtered. */
+  .project-media.project-media--screenshot {
+    aspect-ratio: var(--ratio);
+    background: var(--white);
+  }
+
+  .project-media--screenshot .project-media__img {
+    object-fit: contain;
+    filter: none !important;
+    transform: none !important;
   }
 
   .project-media__cover {

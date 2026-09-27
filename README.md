@@ -103,7 +103,6 @@ Credits appear in the site footer.
 | `src/assets/photos/hero-basketball.jpg` | Homepage hero | Kylie Osullivan | [Unsplash](https://unsplash.com/photos/brown-and-black-basketball-ball-BfaBLVCBTI8) |
 | `src/assets/photos/hero-baseball.jpg` | Homepage hero | Ben Hershey | [Unsplash](https://unsplash.com/photos/white-and-red-baseball-on-brown-soil-at-daytime-xJPCSJkxRys) |
 | `src/assets/photos/tme-hero.jpg` | Project hero | Timur Shakerzianov | [Unsplash](https://unsplash.com/photos/a-soccer-player-stands-on-the-ball-px_TLsiL28M) |
-| `src/assets/photos/tme-featured.jpg` | Featured card / project card | Amr Taha | [Unsplash](https://unsplash.com/photos/a-person-standing-on-top-of-a-soccer-ball-RuFuCkow5uw) |
 
 To swap a hero photo, replace the file (or change the import) in `src/data/photos.ts` and
 adjust its `position` so the ball stays in frame. Astro converts every photo to optimised
@@ -121,7 +120,9 @@ swap the `@import` at the top of `global.css`, and update `--font-display` or `-
 - About page bio (marked "Placeholder")
 - LinkedIn and email (marked "To be added")
 - Resume PDF (placeholder panel)
-- Transfer Market Efficiency: dashboard (temporary placeholder), case study (provisional intro only),
-  dashboard preview screenshot, publication date, project share image. Its photos are licensed
-  editorial images, not dashboard screenshots.
+- Transfer Market Efficiency: case study (provisional intro only), interactive dashboard link/embed
+  (the two final screenshots are in place), publication date, project share image.
+
+Dashboard screenshots live in `src/assets/projects/transfer-market-efficiency/`, copied unmodified
+from the analytics repository. Astro serves responsive WebP versions; the source PNGs are untouched.
 - Homepage "Analytics profile" and "Tools & skills" copy is draft wording, so please review it

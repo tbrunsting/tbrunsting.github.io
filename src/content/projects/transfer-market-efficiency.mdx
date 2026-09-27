@@ -32,26 +32,32 @@ stats:
   - label: Club-seasons
     value: '684'
 githubUrl: https://github.com/tbrunsting/Transfer-Market-Efficiency
-# Editorial photography (Unsplash License). These are mood images, not
-# dashboard screenshots; the dashboard preview is added separately below.
-thumbnail:
-  src: ../../assets/photos/tme-featured.jpg
-  alt: A player resting one foot on a black-and-white football on the touchline of an artificial pitch
-  credit: Photo by Amr Taha on Unsplash
-  position: 50% 58%
+# Hero background: editorial photography (Unsplash License), not a dashboard.
 heroImage:
   src: ../../assets/photos/tme-hero.jpg
   alt: A player's boot resting on a football on a floodlit pitch at dusk
   credit: Photo by Timur Shakerzianov on Unsplash
   position: 70% 62%
+# Final Power BI screenshots, copied unmodified from the project repository.
+# The preview is also used as the featured/card image.
 dashboard:
-  status: in-development
-# dashboard.preview, dashboard.url, dashboard.embedUrl, publishedAt and ogImage
-# are intentionally omitted until real assets exist.
+  status: in-development # the interactive dashboard is not published yet
+  preview:
+    src: ../../assets/projects/transfer-market-efficiency/transfer-market-overview.png
+    alt: >-
+      League overview page of the Transfer Market Efficiency Power BI dashboard, with summary
+      cards, a scatter plot of total transfer spend against sporting return, a donut chart of
+      spend by league, season and league filters, and bar charts of the best and worst spend
+      efficiency.
+  note: League overview page of the Power BI dashboard. The interactive version is not yet published.
+# dashboard.url, dashboard.embedUrl, publishedAt and ogImage are intentionally
+# omitted until they exist.
 ---
 
+import clubBreakdown from '../../assets/projects/transfer-market-efficiency/transfer-market-club-breakdown.png';
+
 <PlaceholderNote label="Provisional introduction" title="The full case study is being written">
-  This page is an early version. The introduction below describes the project's question, scope and pipeline using details from the project repository. The findings, the finished dashboard and the long-form technical write-up will be added once they are ready.
+  This page is an early version. The introduction below describes the project's question, scope and pipeline using details from the project repository. The findings and the long-form technical write-up will be added once they are ready.
 </PlaceholderNote>
 
 Every summer, clubs across Europe's top five leagues spend enormous sums moving players between one another. Most public coverage asks how much clubs spend. This project asks a different question: **did the spending work?**
@@ -73,8 +79,18 @@ The project runs as a reproducible pipeline, from frozen, checksummed source dat
     { label: 'Warehouse', icon: 'database', detail: 'Relational schema at one row per transfer event', tools: ['PostgreSQL'] },
     { label: 'Score', icon: 'sigma', detail: 'Player quality, pillar scores and a composite efficiency index', tools: ['R', 'SQL checks'] },
     { label: 'Present', icon: 'layers', detail: 'Presentation views shaped for the dashboard', tools: ['SQL'] },
-    { label: 'Dashboard', icon: 'chart', detail: 'League-wide and club-level views, in development', tools: ['Power BI'] },
+    { label: 'Dashboard', icon: 'chart', detail: 'League-wide and club-level views', tools: ['Power BI'] },
   ]}
+/>
+
+## The club-level drilldown
+
+The dashboard's second page narrows the view to a single club. Choosing a club brings together its current squad, its largest transfers, a breakdown of its spending, its efficiency pillars, its honours and a season-by-season view of transfer cash flow alongside manager tenures.
+
+<Figure
+  src={clubBreakdown}
+  alt="Club detail page of the Transfer Market Efficiency Power BI dashboard, filtered to Real Madrid. It shows total spend, sales, net spend and ROI cards, a current squad table with market values, a table of the largest transfers, the club efficiency score with its pillar values and rank, a spending breakdown donut, league and cup titles, and a chart of annual transfer cash flow and efficiency across manager tenures."
+  caption="The club detail page of the Power BI dashboard, shown here filtered to Real Madrid using the club selector."
 />
 
 <PlaceholderNote label="Placeholder" title="Long-form case study — coming soon">

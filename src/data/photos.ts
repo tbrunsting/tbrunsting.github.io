@@ -61,5 +61,4 @@ export const heroPhotos: SportPhoto[] = [
 export const photoCredits = [
   ...heroPhotos.map((p) => p.credit),
   'Timur Shakerzianov',
-  'Amr Taha',
 ];
