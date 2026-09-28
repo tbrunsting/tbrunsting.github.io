@@ -25,7 +25,7 @@ const showPending = import.meta.env.DEV;
     lede="I build end-to-end analytics projects around specific questions in professional and collegiate sports."
   />
 
-  <section class="section surface-light" aria-labelledby="approach-title">
+  <section class="section surface-light" aria-labelledby={hasBio || showPending ? 'profile-title' : 'approach-title'}>
     <div class="container about-grid">
       <div class="about-main">
         {

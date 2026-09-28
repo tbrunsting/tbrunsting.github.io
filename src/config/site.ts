@@ -25,21 +25,28 @@ export const site = {
    * Leave empty until written: the public site then omits the section, and
    * `npm run dev` shows a marked placeholder instead.
    */
-  bio: [] as string[],
+  bio: [
+    "I'm Tyler Brunsting, a Business & Process Analyst at NCS and a graduate of Cedarville University, where I studied Finance with minors in Business Analytics and IT Management.",
+    'Professionally, I work at the intersection of data, business processes and decision-making. My work includes building reporting systems, analyzing operational performance, investigating data-quality issues and translating complex findings into practical recommendations.',
+    "Outside of work, I combine my background in analytics with my lifelong interest in sports. Having played soccer for most of my life, I've always been interested in what separates successful teams from the rest. My sports analytics projects give me an opportunity to explore those questions using Python, SQL, statistical modeling and interactive dashboards.",
+    'I created this website to document my analytical process, share my findings and build projects across professional and collegiate sports.',
+  ] as string[],
 
   links: {
     /** Public GitHub profile (verified from the Transfer-Market-Efficiency repository owner). */
     github: 'https://github.com/tbrunsting' as string | null,
-    /** Not provided yet. Example: 'https://www.linkedin.com/in/your-handle/' */
-    linkedin: null as string | null,
-    /** Not provided yet. Example: 'you@example.com' (no "mailto:") */
+    /** Verified by Tyler. */
+    linkedin: 'https://www.linkedin.com/in/tyler-brunsting/' as string | null,
+    /** Not provided yet: the address you want shown publicly (no "mailto:"). */
     email: null as string | null,
   },
 
   resume: {
     /**
-     * Path under /public to your resume PDF, e.g. '/resume/tyler-brunsting-resume.pdf'.
-     * Leave null until the real file has been added to public/resume/.
+     * Path under /public to your CURRENT resume PDF, e.g. '/resume/tyler-brunsting-resume.pdf'.
+     * Leave null until the new file has been added to public/resume/. Before
+     * setting it, open the PDF and confirm it shows only the contact details you
+     * want public (no outdated university email).
      */
     pdf: null as string | null,
     /** Optional "last updated" label, e.g. 'October 2026'. */

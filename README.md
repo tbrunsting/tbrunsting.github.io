@@ -128,10 +128,20 @@ swap the `@import` at the top of `global.css`, and update `--font-display` or `-
 Set these in `src/config/site.ts`. Until then the public build hides them (no dead links or
 visible placeholders), and `npm run dev` shows each as a marked "pending" item.
 
-- `bio` — About page profile paragraphs (the Profile section is omitted until set)
-- `links.linkedin` and `links.email` — Contact page, About page and footer
-- `resume.pdf` — put the PDF in `public/resume/`; until then `/resume/` shows a short note,
-  is marked `noindex` and is left out of the sitemap
+- `links.email` — the public email address for the Contact page, About page and footer
+- `resume.pdf` — put the **current** PDF in `public/resume/`; until then `/resume/` shows a
+  short note, is marked `noindex` and is left out of the sitemap. The build refuses a PDF
+  whose text contains a university (`.edu`) email; check the file by eye as well.
+
+Done: `bio` (About page) and `links.linkedin`.
+
+## Case-study table of contents
+
+Project pages with four or more `##` sections get a table of contents automatically,
+built from the article's own `##` and `###` headings (`src/components/TableOfContents.astro`):
+a sticky right-hand list with the active section highlighted from 1200px wide, and a compact
+sticky "Jump to section" control below that. Both are plain links and a native `<details>`,
+so they work with the keyboard and without JavaScript.
 
 ## Transfer Market Efficiency sources
 

@@ -7,6 +7,7 @@ import ProjectHero from '@/components/ProjectHero.astro';
 import DashboardPreview from '@/components/DashboardPreview.astro';
 import DashboardEmbed from '@/components/DashboardEmbed.astro';
 import ContactCTA from '@/components/ContactCTA.astro';
+import TableOfContents from '@/components/TableOfContents.astro';
 import Icon from '@/components/Icon.astro';
 import { mdxComponents } from '@/components/mdx';
 import { getProjects, type Project } from '@/lib/projects';
@@ -35,7 +36,11 @@ interface Props {
 
 const { project } = Astro.props;
 const { data } = project;
-const { Content } = await render(project);
+const { Content, headings } = await render(project);
+
+// A table of contents only earns its space on genuinely long case studies.
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const showToc = tocHeadings.filter((h) => h.depth === 2).length >= 4;
 ---
 
 <BaseLayout
@@ -50,11 +55,20 @@ const { Content } = await render(project);
   <ProjectHero project={project} />
 
   <div class="surface-light">
-    <div class="container project-dashboard">
+   <div class:list={['container case-layout', { 'case-layout--toc': showToc }]}>
+    {
+      showToc && (
+        <div class="case-toc">
+          <TableOfContents headings={tocHeadings} />
+        </div>
+      )
+    }
+    <div class="case-main">
+    <div class="project-dashboard">
       <DashboardPreview dashboard={data.dashboard} title={data.title} />
     </div>
 
-    <article class="container project-body" aria-label="Case study">
+    <article class="project-body" aria-label="Case study">
       <div class="prose">
         <Content components={mdxComponents} />
       </div>
@@ -62,7 +76,7 @@ const { Content } = await render(project);
 
     {
       data.dashboard.embedUrl && (
-        <div class="container project-embed">
+        <div class="project-embed">
           <DashboardEmbed
             embedUrl={data.dashboard.embedUrl}
             url={data.dashboard.url}
@@ -73,7 +87,7 @@ const { Content } = await render(project);
       )
     }
 
-    <nav class="container project-links" aria-label="Project links">
+    <nav class="project-links" aria-label="Project links">
       {
         data.dashboard.url && (
           <a class="btn btn--primary" href={data.dashboard.url} target="_blank" rel="noopener">
@@ -107,15 +121,70 @@ const { Content } = await render(project);
         All projects
       </a>
     </nav>
+    </div>
+   </div>
   </div>
 
   <ContactCTA />
 </BaseLayout>
 
 <style>
+  /* Without a table of contents: the original centred 60rem column. */
+  .case-main {
+    max-width: var(--width-wide);
+    margin-inline: auto;
+  }
+
+  /* With one: a sticky right-hand column on wide screens, and a sticky
+     "Jump to section" bar above the content on narrower ones. */
+  .case-layout--toc {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .case-layout--toc .case-main {
+    max-width: none;
+    margin-inline: 0;
+  }
+
+  .case-toc {
+    position: sticky;
+    top: var(--header-height);
+    z-index: 20;
+  }
+
+  @media (min-width: 75rem) {
+    .case-layout--toc {
+      grid-template-columns: minmax(0, 1fr) 14.5rem;
+      column-gap: clamp(2rem, 1rem + 2vw, 3.5rem);
+      align-items: start;
+    }
+
+    /* The column spans the article's height; the list inside it is what sticks. */
+    .case-toc {
+      grid-column: 2;
+      grid-row: 1;
+      position: static;
+      z-index: auto;
+      align-self: stretch;
+      padding-top: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    }
+
+    .case-layout--toc .case-main {
+      grid-column: 1;
+      grid-row: 1;
+    }
+  }
+
+  /* Leave room for the sticky mobile bar when jumping to a heading. */
+  @media (max-width: 74.99rem) {
+    :global(html:has(.case-layout--toc)) {
+      scroll-padding-top: calc(var(--header-height) + 4.25rem);
+    }
+  }
+
   .project-dashboard {
     padding-top: clamp(2rem, 1.5rem + 2vw, 3.5rem);
-    max-width: calc(var(--width-wide) + 2 * var(--gutter));
   }
 
   .project-body {
@@ -132,7 +201,6 @@ const { Content } = await render(project);
     gap: var(--space-3);
     padding-top: var(--space-6);
     padding-bottom: var(--section-pad);
-    max-width: calc(var(--width-wide) + 2 * var(--gutter));
     border-top: var(--border);
   }
 

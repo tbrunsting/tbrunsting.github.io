@@ -1,6 +1,7 @@
 ---
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { inflateSync } from 'node:zlib';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHeader from '@/components/PageHeader.astro';
 import PlaceholderNote from '@/components/PlaceholderNote.astro';
@@ -13,6 +14,42 @@ const { pdf, updated } = site.resume;
 // Fail loudly rather than publish a broken download link.
 if (pdf && !existsSync(join(process.cwd(), 'public', pdf))) {
   throw new Error(`site.resume.pdf is "${pdf}", but public${pdf} does not exist.`);
+}
+
+/**
+ * Best-effort guard against publishing an outdated resume: refuse to build if
+ * the PDF's readable text (raw, plus any Flate-compressed streams) contains a
+ * university (.edu) email address. PDFs can encode text in ways this cannot
+ * read, so still check the file by eye before setting resume.pdf.
+ */
+function findEduEmails(file: string): string[] {
+  const bytes = readFileSync(file);
+  const raw = bytes.toString('latin1');
+  let text = raw;
+  const streamRe = /stream\r?\n/g;
+  let match: RegExpExecArray | null;
+  while ((match = streamRe.exec(raw))) {
+    const start = match.index + match[0].length;
+    const end = raw.indexOf('endstream', start);
+    if (end === -1) break;
+    try {
+      text += '\n' + inflateSync(bytes.subarray(start, end)).toString('latin1');
+    } catch {
+      /* not a Flate stream (e.g. an image); skip */
+    }
+    streamRe.lastIndex = end;
+  }
+  return [...new Set(text.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.edu\b/gi) ?? [])];
+}
+
+if (pdf) {
+  const eduEmails = findEduEmails(join(process.cwd(), 'public', pdf));
+  if (eduEmails.length) {
+    throw new Error(
+      `The resume PDF (public${pdf}) contains a university email (${eduEmails.join(', ')}). ` +
+        'Replace it with an up-to-date resume before publishing.',
+    );
+  }
 }
 
 const pdfUrl = pdf ? withBase(pdf) : null;
