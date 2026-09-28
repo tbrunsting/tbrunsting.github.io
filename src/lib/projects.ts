@@ -26,7 +26,7 @@ export function projectUrl(project: Project): string {
 
 export const statusLabel: Record<Project['data']['status'], string> = {
   'in-progress': 'In progress',
-  published: 'Published',
+  published: 'Completed',
   archived: 'Archived',
 };
 

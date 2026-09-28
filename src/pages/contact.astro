@@ -4,14 +4,15 @@ import PageHeader from '@/components/PageHeader.astro';
 import ProfileLinks from '@/components/ProfileLinks.astro';
 import { site } from '@/config/site';
 
-const missing = Object.values(site.links).some((v) => v === null);
+// Developer note only; missing links are omitted from the public build.
+const missing = import.meta.env.DEV && Object.values(site.links).some((v) => v === null);
 ---
 
 <BaseLayout title="Contact" description={`How to get in touch with ${site.name}.`}>
   <PageHeader
     eyebrow="Contact"
     title="Get in touch"
-    lede="Questions about a project, its data or its methods are always welcome. The best ways to reach me are below."
+    lede="Questions about a project, its data or its methods are always welcome. You can reach me through the links below."
   />
 
   <section class="section surface-light">
@@ -20,7 +21,7 @@ const missing = Object.values(site.links).some((v) => v === null);
       {
         missing && (
           <p class="contact__note">
-            Links marked “To be added” will appear here once they are set in <code>src/config/site.ts</code>.
+            Dev only: links marked “To be added” are hidden on the public site until they are set in <code>src/config/site.ts</code>.
           </p>
         )
       }

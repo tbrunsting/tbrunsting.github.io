@@ -9,6 +9,7 @@ import Figure from './Figure.astro';
 import FindingCard from './FindingCard.astro';
 import FindingGrid from './FindingGrid.astro';
 import Formula from './Formula.astro';
+import ResourceLinks from './ResourceLinks.astro';
 import Table from './Table.astro';
 import TechnicalNote from './TechnicalNote.astro';
 import DashboardEmbed from '../DashboardEmbed.astro';
@@ -27,5 +28,6 @@ export const mdxComponents = {
   FindingGrid,
   Formula,
   PlaceholderNote,
+  ResourceLinks,
   TechnicalNote,
 };

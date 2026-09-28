@@ -20,6 +20,13 @@ export const site = {
   defaultOgImage: '/og/default.png',
   defaultOgImageAlt: 'Tyler Brunsting — Sports Analytics',
 
+  /**
+   * Your professional bio for the About page, one string per paragraph.
+   * Leave empty until written: the public site then omits the section, and
+   * `npm run dev` shows a marked placeholder instead.
+   */
+  bio: [] as string[],
+
   links: {
     /** Public GitHub profile (verified from the Transfer-Market-Efficiency repository owner). */
     github: 'https://github.com/tbrunsting' as string | null,

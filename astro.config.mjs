@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import { site as siteConfig } from './src/config/site.ts';
 
 /**
  * Site URL and base path are read from environment variables so that:
@@ -24,8 +25,10 @@ export default defineConfig({
   trailingSlash: 'ignore',
   integrations: [
     mdx(),
-    // The internal component reference page is kept out of the sitemap.
-    sitemap({ filter: (page) => !page.includes('/styleguide') }),
+    // Keep the dev-only styleguide, and the resume page until a PDF exists, out of the sitemap.
+    sitemap({
+      filter: (page) => !page.includes('/styleguide') && (siteConfig.resume.pdf !== null || !page.includes('/resume')),
+    }),
   ],
   markdown: {
     shikiConfig: {

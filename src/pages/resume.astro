@@ -16,9 +16,10 @@ if (pdf && !existsSync(join(process.cwd(), 'public', pdf))) {
 }
 
 const pdfUrl = pdf ? withBase(pdf) : null;
+const showPending = import.meta.env.DEV;
 ---
 
-<BaseLayout title="Resume" description={`Resume of ${site.name}.`}>
+<BaseLayout title="Resume" description={`Resume of ${site.name}.`} noindex={!pdfUrl}>
   <PageHeader eyebrow="Resume" title="Resume">
     {
       pdfUrl && (
@@ -52,11 +53,19 @@ const pdfUrl = pdf ? withBase(pdf) : null;
               </p>
             </object>
           </div>
-        ) : (
+        ) : showPending ? (
           <div class="resume-placeholder">
-            <PlaceholderNote label="Placeholder" title="Resume coming soon">
-              <p>A resume has not been added yet. When it is ready, place the PDF in <code>public/resume/</code> and set <code>resume.pdf</code> in <code>src/config/site.ts</code>. This page will then show an inline viewer and a download button.</p>
+            <PlaceholderNote label="Pending — dev only" title="Resume PDF not added yet">
+              <p>Place the PDF in <code>public/resume/</code> and set <code>resume.pdf</code> in <code>src/config/site.ts</code>. This page will then show an inline viewer and a download button. Until then, the public page shows a short note and is excluded from search engines and the sitemap.</p>
             </PlaceholderNote>
+          </div>
+        ) : (
+          <div class="resume-pending">
+            <p>My resume isn’t posted here yet.</p>
+            <p>
+              In the meantime, the <a href={withBase('/projects/')}>projects</a> show the work in full, and the{' '}
+              <a href={withBase('/contact/')}>contact page</a> lists where to reach me.
+            </p>
           </div>
         )
       }
@@ -97,6 +106,18 @@ const pdfUrl = pdf ? withBase(pdf) : null;
 
   .resume-fallback a {
     color: var(--accent-strong);
+    font-weight: 600;
+  }
+
+  .resume-pending {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 38rem;
+    font-size: var(--text-lg);
+  }
+
+  .resume-pending a {
+    color: var(--orange-text);
     font-weight: 600;
   }
 

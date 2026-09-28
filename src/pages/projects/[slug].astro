@@ -74,10 +74,16 @@ const { Content } = await render(project);
     }
 
     <nav class="container project-links" aria-label="Project links">
-      <a class="btn btn--ghost" href={withBase('/projects/')}>
-        <Icon name="arrow-left" />
-        All projects
-      </a>
+      {
+        data.dashboard.url && (
+          <a class="btn btn--primary" href={data.dashboard.url} target="_blank" rel="noopener">
+            <Icon name="chart" />
+            Explore interactive dashboard
+            <Icon name="external" />
+            <span class="visually-hidden">(opens in a new tab)</span>
+          </a>
+        )
+      }
       {
         data.githubUrl && (
           <a class="btn btn--dark" href={data.githubUrl} target="_blank" rel="noopener">
@@ -88,14 +94,18 @@ const { Content } = await render(project);
         )
       }
       {
-        data.dashboard.url && (
-          <a class="btn btn--dark" href={data.dashboard.url} target="_blank" rel="noopener">
-            <Icon name="chart" />
-            Open Interactive Dashboard
-            <span class="visually-hidden">(opens in a new tab)</span>
+        data.downloads.map((file) => (
+          <a class="btn btn--ghost" href={file.url} rel="noopener">
+            <Icon name="download" />
+            {file.label}
+            {file.detail && <span class="visually-hidden">({file.detail})</span>}
           </a>
-        )
+        ))
       }
+      <a class="btn btn--ghost" href={withBase('/projects/')}>
+        <Icon name="arrow-left" />
+        All projects
+      </a>
     </nav>
   </div>
 

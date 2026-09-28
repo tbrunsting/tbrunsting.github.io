@@ -10,7 +10,12 @@ import { getProjects, projectUrl } from '@/lib/projects';
 import { site } from '@/config/site';
 
 const projects = await getProjects();
-const current = projects.filter((p) => p.data.status === 'in-progress');
+// Featured projects first; otherwise the most recent work.
+const highlighted = projects.filter((p) => p.data.featured).length
+  ? projects.filter((p) => p.data.featured)
+  : projects.slice(0, 3);
+const hasBio = site.bio.length > 0;
+const showPending = import.meta.env.DEV;
 ---
 
 <BaseLayout title="About" description={`About ${site.name}: sports analytics projects, approach and tools.`}>
@@ -20,33 +25,51 @@ const current = projects.filter((p) => p.data.status === 'in-progress');
     lede="I build end-to-end analytics projects around specific questions in professional and collegiate sports."
   />
 
-  <section class="section surface-light" aria-labelledby="profile-title">
+  <section class="section surface-light" aria-labelledby="approach-title">
     <div class="container about-grid">
       <div class="about-main">
-        <h2 id="profile-title">Profile</h2>
-        <PlaceholderNote label="Placeholder" title="Personal bio to be written">
-          <p>This space is reserved for your own professional summary: background, education or current role, and what draws you to sports analytics. Nothing here has been invented; edit <code>src/pages/about.astro</code> to add it.</p>
-        </PlaceholderNote>
+        {
+          hasBio && (
+            <>
+              <h2 id="profile-title">Profile</h2>
+              <div class="about-copy">
+                {site.bio.map((paragraph) => (
+                  <p>{paragraph}</p>
+                ))}
+              </div>
+            </>
+          )
+        }
+        {
+          !hasBio && showPending && (
+            <>
+              <h2 id="profile-title">Profile</h2>
+              <PlaceholderNote label="Pending — dev only" title="Personal bio to be written">
+                <p>Add your professional summary to <code>bio</code> in <code>src/config/site.ts</code>. Until then this section is hidden on the public site.</p>
+              </PlaceholderNote>
+            </>
+          )
+        }
 
-        <h2>My approach</h2>
+        <h2 id="approach-title">My approach</h2>
         <div class="about-copy">
           <p>Every project starts with a question a fan, analyst or front office would actually ask, not with a dataset looking for a use.</p>
           <p>From there the work follows the whole path: sourcing the data, checking it against independent sources, modelling it transparently and presenting the result in a form people can explore. Methodological decisions, rejected alternatives and known limitations are documented alongside the results, so readers can judge how much weight a finding deserves.</p>
         </div>
       </div>
 
-      <aside class="about-side" aria-label="Links and current focus">
+      <aside class="about-side" aria-label="Links and featured work">
         <div class="side-card">
           <h2 class="side-card__title">Find me online</h2>
           <ProfileLinks />
         </div>
 
         {
-          current.length > 0 && (
+          highlighted.length > 0 && (
             <div class="side-card">
-              <h2 class="side-card__title">Current focus</h2>
+              <h2 class="side-card__title">Featured work</h2>
               <ul class="focus-list" role="list">
-                {current.map((p) => (
+                {highlighted.map((p) => (
                   <li>
                     <a href={projectUrl(p)}>
                       <span class="focus-list__title">{p.data.title}</span>

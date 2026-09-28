@@ -1,12 +1,12 @@
-# tbrunsting-site — Sports analytics portfolio (V1, local)
+# tbrunsting-site — Sports analytics portfolio
 
-A static Astro site for long-form sports analytics projects. **Local development
-only.** Nothing is deployed, and there is no Git remote. See
-[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for how publishing will work later.
+A static Astro site for long-form sports analytics projects. The site is
+launch-ready but not yet deployed; see [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)
+for the publishing steps.
 
 ## Everyday commands
 
-Run these from this folder (`C:\Users\tyler\Projects\tbrunsting-site`):
+Run these from the project folder:
 
 | Command | What it does |
 |---|---|
@@ -45,27 +45,35 @@ design/og/                Editable SVG sources for share images
 3. Write the case study below the frontmatter in whatever order suits the project.
    These components work without imports:
    `Callout`, `CodeBlock`, `DataPipeline`, `DashboardEmbed`, `Figure`, `FindingCard`,
-   `FindingGrid`, `Formula`, `TechnicalNote`, `PlaceholderNote`. Markdown tables become
-   scrollable automatically. See every component in action at <http://localhost:4321/styleguide/>.
+   `FindingGrid`, `Formula`, `ResourceLinks`, `TechnicalNote`, `PlaceholderNote`. Markdown
+   tables become scrollable automatically. See every component in action at
+   <http://localhost:4321/styleguide/> (dev server only; the page is never published).
 4. Put project images in `src/assets/projects/<slug>/` and reference them with a
    relative path, for example `thumbnail: { src: ../../assets/projects/<slug>/cover.png, alt: "…" }`.
 5. The homepage grid and Projects page update automatically.
 
-### Adding the real dashboard later
+### Dashboards and downloads
 
 In the project's frontmatter:
 
 ```yaml
+status: published          # shows the "Completed" badge
 dashboard:
   status: live
   preview:
-    src: ../../assets/projects/transfer-market-efficiency/dashboard.png
+    src: ../../assets/projects/<slug>/dashboard.png
     alt: Describe what the dashboard shows
-  url: https://…          # "Open Interactive Dashboard" link
-  embedUrl: https://…     # desktop iframe (hidden on phones)
+  url: https://…          # "Explore interactive dashboard" buttons and card links
+  embedUrl: https://…     # optional desktop iframe (hidden on phones)
+downloads:
+  - label: Download original Power BI file (.pbix)
+    url: https://…        # a verified direct download URL
+    detail: File name, size, required software
 ```
 
 Anything left out stays hidden. Missing values never produce an empty iframe or a dead button.
+Transfer Market Efficiency links to its standalone dashboard rather than embedding it: the
+dashboard has its own two-page navigation and full-viewport layout.
 
 ### Adding a project share image
 
@@ -115,14 +123,20 @@ neutral chart glyph.
 To change a font, install the Fontsource package (e.g. `npm i @fontsource-variable/manrope`),
 swap the `@import` at the top of `global.css`, and update `--font-display` or `--font-body`.
 
-## What is still a placeholder
+## Personal details still to add
 
-- About page bio (marked "Placeholder")
-- LinkedIn and email (marked "To be added")
-- Resume PDF (placeholder panel)
-- Transfer Market Efficiency: case study (provisional intro only), interactive dashboard link/embed
-  (the two final screenshots are in place), publication date, project share image.
+Set these in `src/config/site.ts`. Until then the public build hides them (no dead links or
+visible placeholders), and `npm run dev` shows each as a marked "pending" item.
 
-Dashboard screenshots live in `src/assets/projects/transfer-market-efficiency/`, copied unmodified
-from the analytics repository. Astro serves responsive WebP versions; the source PNGs are untouched.
-- Homepage "Analytics profile" and "Tools & skills" copy is draft wording, so please review it
+- `bio` — About page profile paragraphs (the Profile section is omitted until set)
+- `links.linkedin` and `links.email` — Contact page, About page and footer
+- `resume.pdf` — put the PDF in `public/resume/`; until then `/resume/` shows a short note,
+  is marked `noindex` and is left out of the sitemap
+
+## Transfer Market Efficiency sources
+
+The case study is written from the analytics repository's README and `docs/` phase write-ups.
+Dashboard screenshots live in `src/assets/projects/transfer-market-efficiency/`, copied
+unmodified from the repository's `docs/` folder. Astro serves responsive WebP versions; the
+source PNGs are untouched. The share image `public/og/transfer-market-efficiency.png` is built
+by `npm run og` from `design/og/transfer-market-efficiency.svg`.

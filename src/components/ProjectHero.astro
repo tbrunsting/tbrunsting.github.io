@@ -16,8 +16,22 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { title, sport, category, timePeriod, question, tools, stats, status, githubUrl, dashboard, publishedAt, updatedAt, heroImage } =
-  project.data;
+const {
+  title,
+  sport,
+  category,
+  timePeriod,
+  question,
+  tools,
+  stats,
+  status,
+  githubUrl,
+  dashboard,
+  downloads,
+  publishedAt,
+  updatedAt,
+  heroImage,
+} = project.data;
 
 // Decorative bar heights (not data).
 const bars = [30, 44, 38, 56, 48, 66, 58, 74, 64, 82];
@@ -65,31 +79,34 @@ const bars = [30, 44, 38, 56, 48, 66, 58, 74, 64, 82];
         <p class="project-hero__question-text">{question}</p>
       </div>
 
-      <div class="btn-row">
-        {
-          githubUrl && (
-            <a class="btn btn--primary" href={githubUrl} target="_blank" rel="noopener">
-              <Icon name="github" />
-              View source on GitHub
-              <span class="visually-hidden">(opens in a new tab)</span>
-            </a>
-          )
-        }
-        {
-          dashboard.url ? (
-            <a class="btn btn--ghost" href={dashboard.url} target="_blank" rel="noopener">
-              <Icon name="chart" />
-              Open Interactive Dashboard
-              <span class="visually-hidden">(opens in a new tab)</span>
-            </a>
-          ) : (
-            <span class="btn btn--ghost" aria-disabled="true">
-              <Icon name="chart" />
-              {dashboard.preview ? 'Interactive dashboard coming soon' : 'Dashboard coming soon'}
-            </span>
-          )
-        }
-      </div>
+      {
+        (dashboard.url || githubUrl || downloads.length > 0) && (
+          <div class="btn-row">
+            {dashboard.url && (
+              <a class="btn btn--primary" href={dashboard.url} target="_blank" rel="noopener">
+                <Icon name="chart" />
+                Explore interactive dashboard
+                <Icon name="external" />
+                <span class="visually-hidden">(opens in a new tab)</span>
+              </a>
+            )}
+            {githubUrl && (
+              <a class:list={['btn', dashboard.url ? 'btn--ghost' : 'btn--primary']} href={githubUrl} target="_blank" rel="noopener">
+                <Icon name="github" />
+                Source code on GitHub
+                <span class="visually-hidden">(opens in a new tab)</span>
+              </a>
+            )}
+            {downloads.map((file) => (
+              <a class="btn btn--ghost" href={file.url} rel="noopener">
+                <Icon name="download" />
+                {file.label}
+                {file.detail && <span class="visually-hidden">({file.detail})</span>}
+              </a>
+            ))}
+          </div>
+        )
+      }
     </div>
 
     <div class="project-hero__foot">

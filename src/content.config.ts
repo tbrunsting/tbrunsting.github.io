@@ -89,6 +89,21 @@ const projects = defineCollection({
       githubUrl: z.url().optional(),
 
       /**
+       * Downloadable originals, e.g. a Power BI .pbix file. Each needs a real,
+       * verified URL; the list renders nothing when empty.
+       */
+      downloads: z
+        .array(
+          z.object({
+            label: z.string(),
+            url: z.url(),
+            /** Short file description, e.g. 'Power BI Desktop file, 4.8 MB'. */
+            detail: z.string().optional(),
+          }),
+        )
+        .default([]),
+
+      /**
        * Static, manually created share image in /public, e.g. '/og/transfer-market-efficiency.png'.
        * Omit to use the site default. The build fails if the file does not exist.
        */

@@ -1,8 +1,8 @@
 ---
 /**
  * GitHub / LinkedIn / Email links from src/config/site.ts.
- * Links that are not provided yet are shown as muted "to be added" rows,
- * never as dead links.
+ * Links that are not provided yet are never rendered as dead links: the public
+ * build omits them, and `npm run dev` shows them as muted "to be added" rows.
  */
 import { site } from '@/config/site';
 import Icon from './Icon.astro';
@@ -13,12 +13,19 @@ interface Props {
 
 const { size = 'md' } = Astro.props;
 const { github, linkedin, email } = site.links;
+const showPending = import.meta.env.DEV;
 
 const rows = [
   { key: 'github', label: 'GitHub', icon: 'github', href: github, display: github?.replace(/^https?:\/\//, '') },
   { key: 'linkedin', label: 'LinkedIn', icon: 'linkedin', href: linkedin, display: linkedin?.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '') },
   { key: 'email', label: 'Email', icon: 'mail', href: email ? `mailto:${email}` : null, display: email },
-] as const;
+].filter((row) => row.href || showPending) as {
+  key: string;
+  label: string;
+  icon: 'github' | 'linkedin' | 'mail';
+  href: string | null;
+  display?: string | null;
+}[];
 ---
 
 <ul class:list={['profile-links', `profile-links--${size}`]} role="list">
@@ -32,6 +39,7 @@ const rows = [
               <span class="profile-link__label">{row.label}</span>
               <span class="profile-link__value">{row.display}</span>
             </span>
+            {row.key !== 'email' && <span class="visually-hidden">(opens in a new tab)</span>}
           </a>
         ) : (
           <span class="profile-link profile-link--pending">

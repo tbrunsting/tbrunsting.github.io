@@ -4,21 +4,23 @@ sport: European Soccer
 category: Transfer market
 timePeriod: 2017/18–2023/24
 summary: >-
-  Seven seasons of transfer activity across the Premier League, La Liga, Serie A, the
-  Bundesliga and Ligue 1, scored club by club for how much on-field value the spending bought.
+  Seven seasons of transfer activity across Europe's top five leagues, scored club by club on
+  recruitment, trading, squad value growth and sporting return, with an interactive two-page
+  dashboard.
+# Wording follows the project README.
 question: >-
-  Which clubs in Europe's top five leagues extract the most on-field value per euro spent in
-  the transfer market, which burn the most money for the least return, and — over seven
-  seasons — which clubs actually got smarter?
+  Which clubs in Europe's top five leagues get the most on-field value per euro spent in the
+  transfer market, and which got smarter over time?
 featured: true
-status: in-progress
+status: published
 tools:
   - Python
   - PostgreSQL
   - R
   - Power BI
-# Scope figures only — verified against the project repository's documentation
-# (README, docs/phase-1-summary.md, docs/phase-1-data-coverage.md). No findings.
+  - Astro
+  - ECharts
+# Scope figures, verified against the project repository (README and docs/).
 stats:
   - label: Leagues
     value: '5'
@@ -32,67 +34,340 @@ stats:
   - label: Club-seasons
     value: '684'
 githubUrl: https://github.com/tbrunsting/Transfer-Market-Efficiency
+downloads:
+  - label: Download original Power BI file (.pbix)
+    url: https://github.com/tbrunsting/Transfer-Market-Efficiency/raw/main/Dashboard.pbix
+    detail: Dashboard.pbix, 4.8 MB, requires Power BI Desktop
 # Hero background: editorial photography (Unsplash License), not a dashboard.
 heroImage:
   src: ../../assets/photos/tme-hero.jpg
   alt: A player's boot resting on a football on a floodlit pitch at dusk
   credit: Photo by Timur Shakerzianov on Unsplash
   position: 70% 62%
-# Final Power BI screenshots, copied unmodified from the project repository.
+# Final Power BI screenshots, copied unmodified from the project repository (docs/).
 # The preview is also used as the featured/card image.
 dashboard:
-  status: in-development # the interactive dashboard is not published yet
+  status: live
+  url: https://tbrunsting.github.io/Transfer-Market-Efficiency/
   preview:
     src: ../../assets/projects/transfer-market-efficiency/transfer-market-overview.png
     alt: >-
-      League overview page of the Transfer Market Efficiency Power BI dashboard, with summary
-      cards, a scatter plot of total transfer spend against sporting return, a donut chart of
-      spend by league, season and league filters, and bar charts of the best and worst spend
-      efficiency.
-  note: League overview page of the Power BI dashboard. The interactive version is not yet published.
-# dashboard.url, dashboard.embedUrl, publishedAt and ogImage are intentionally
-# omitted until they exist.
+      League overview page of the original Transfer Market Efficiency Power BI report: summary
+      cards, a scatter plot of total transfer spend against points per match on a log axis
+      coloured by quadrant, a donut of transfer spend by league, season and league filters, and
+      bar charts of the best and worst clubs by spend efficiency.
+  note: >-
+    League overview page of the original Power BI report. The live dashboard is an interactive
+    web rebuild of both pages.
+ogImage: /og/transfer-market-efficiency.png
+ogImageAlt: Transfer Market Efficiency — a sports analytics case study by Tyler Brunsting
 ---
 
 import clubBreakdown from '../../assets/projects/transfer-market-efficiency/transfer-market-club-breakdown.png';
 
-<PlaceholderNote label="Provisional introduction" title="The full case study is being written">
-  This page is an early version. The introduction below describes the project's question, scope and pipeline using details from the project repository. The findings and the long-form technical write-up will be added once they are ready.
-</PlaceholderNote>
+Every summer, clubs across Europe's top five leagues spend enormous sums moving players between one another. Some of that money buys players who transform a team; some buys players who barely play; and a handful of clubs fund themselves by buying undervalued players and selling them for far more. Almost all public coverage measures how much clubs spend. This project asks whether the spending worked.
 
-Every summer, clubs across Europe's top five leagues spend enormous sums moving players between one another. Most public coverage asks how much clubs spend. This project asks a different question: **did the spending work?**
+The result is a four-pillar efficiency index for every club in the Premier League, La Liga, Serie A, the Bundesliga and Ligue 1 over seven complete seasons. It is presented in a two-page dashboard: a league-wide overview that answers the question, and a club page that lets anyone inspect a single team.
 
-It scores every club in the Premier League, La Liga, Serie A, the Bundesliga and Ligue 1 across seven complete seasons, from 2017/18 to 2023/24. Efficiency is measured per club and per season rather than as a single seven-year average, so the analysis can show which clubs improved over time.
-
-<Callout type="decision" title="Why the scored window is 2017/18–2023/24">
-  The window starts with the first big-five season that has the advanced statistics the scoring depends on. It ends at 2023/24, the last season for which a complete copy of that data still exists after FBref's Opta-sourced advanced statistics were removed in January 2026. Later transfer windows are not scored.
-</Callout>
-
-## How the analysis is built
-
-The project runs as a reproducible pipeline, from frozen, checksummed source data to a Power BI dashboard. Each scoring step computed in R is recomputed independently in SQL, and a run fails unless the two agree.
-
-<DataPipeline
-  caption="Project pipeline, as documented in the repository."
-  steps={[
-    { label: 'Ingest & validate', icon: 'ingest', detail: 'Frozen, checksummed sources and rule-based consistency checks', tools: ['Python'] },
-    { label: 'Warehouse', icon: 'database', detail: 'Relational schema at one row per transfer event', tools: ['PostgreSQL'] },
-    { label: 'Score', icon: 'sigma', detail: 'Player quality, pillar scores and a composite efficiency index', tools: ['R', 'SQL checks'] },
-    { label: 'Present', icon: 'layers', detail: 'Presentation views shaped for the dashboard', tools: ['SQL'] },
-    { label: 'Dashboard', icon: 'chart', detail: 'League-wide and club-level views', tools: ['Power BI'] },
+<ResourceLinks
+  title="Explore the project"
+  items={[
+    { kind: 'dashboard', label: 'Interactive dashboard', href: 'https://tbrunsting.github.io/Transfer-Market-Efficiency/', detail: 'Both pages, all 145 clubs, season and league filters. Runs in the browser; no sign-in.' },
+    { kind: 'code', label: 'Source repository', href: 'https://github.com/tbrunsting/Transfer-Market-Efficiency', detail: 'Python, SQL and R pipeline, checks and phase-by-phase documentation.' },
+    { kind: 'download', label: 'Original Power BI report', href: 'https://github.com/tbrunsting/Transfer-Market-Efficiency/raw/main/Dashboard.pbix', detail: 'Dashboard.pbix, 4.8 MB. Opens in Power BI Desktop.' },
   ]}
 />
 
-## The club-level drilldown
+## Why transfer efficiency is hard to measure
 
-The dashboard's second page narrows the view to a single club. Choosing a club brings together its current squad, its largest transfers, a breakdown of its spending, its efficiency pillars, its honours and a season-by-season view of transfer cash flow alongside manager tenures.
+Spending is easy to count. Value is not, and a fair comparison has to survive several traps at once.
+
+- **Output is positional.** A centre-back who never scores may be excellent, and a defensive midfielder who never assists may be the reason a team works. Judging signings on goals and assists would misjudge most of the pitch.
+- **Clubs differ enormously in size.** A big club pays far more per unit of output. Before any adjustment, the log of recruitment return and the log of squad value correlate at −0.68, so a naive ratio mostly measures how rich a club is.
+- **Clubs change.** A club under one owner, budget and strategy can be a different organisation a few seasons later, so a single seven-year average can blend two clubs into a meaningless middle number. Efficiency is therefore computed per club, per season.
+- **The data is incomplete, and not randomly.** Undisclosed fees, missing transfer histories and unreliable ownership fields all bias the answer in specific directions. The most important of them, described below, would have manufactured the project's headline finding on its own.
+
+## Scope and sources
+
+The analysis covers five leagues, seven complete seasons from 2017/18 to 2023/24, and 145 clubs, accounting for promotion and relegation: 98 clubs per season, 96 in 2023/24 when Ligue 1 dropped to 18. That is 684 club-seasons in total.
+
+| Source | Used for |
+|---|---|
+| worldfootballR FBref snapshot (archived September 2025) | Player and team performance |
+| Kaggle "FBref 2017–2024" | Shot-creating actions, validated against the snapshot |
+| transfermarkt-datasets (frozen July 2026) | Transfers, valuations, matches and managers |
+| 1,015 Transfermarkt club pages | The primary fee source |
+| Wikidata | Club cities and missing cup winners |
+
+Every source is free, frozen locally and checksummed, with 1,104 manifest rows. The loader refuses to run if a checksum moves.
+
+<Callout type="decision" title="Why the window ends at 2023/24">
+  The window starts in 2017/18, the first big-five season with the advanced statistics that position-adjusted scoring depends on. It ends at 2023/24 because on 20 January 2026 Opta terminated FBref's data licence and every Opta-sourced advanced statistic was removed, past seasons included. The last complete public copy of that data stops at 2023/24. Scoring a later season from partial data would break the consistency the window is built on.
+</Callout>
+
+## Building a dataset worth trusting
+
+### The completeness problem
+
+The frozen Transfermarkt transfers table looked complete. It was not, and the gap ran along exactly the axis the project measures. Checked against Transfermarkt's own club pages, real fee-bearing signings were missing, and missing far more often early in the window:
+
+| Season | True spend | Present in the frozen table | Missing |
+|---|---:|---:|---:|
+| 2017/18 | €5,547m | 79.1% | €1,157m |
+| 2018/19 | €5,219m | 82.9% | €891m |
+| 2019/20 | €6,509m | 90.3% | €631m |
+| 2020/21 | €3,775m | 92.7% | €277m |
+| 2021/22 | €3,868m | 96.6% | €132m |
+| 2022/23 | €5,932m | 98.5% | €88m |
+| 2023/24 | €6,563m | 99.6% | €29m |
+
+In 2017/18 one euro in five was invisible; by 2023/24, one in 250. Left unfixed, that 40× coverage gradient would have made clubs look as if they were spending less early on and "getting smarter" over time, purely as an artefact of how the data was collected.
+
+The fix was to fetch all 1,015 club transfer pages (145 clubs × 7 seasons) directly, with plain HTTP requests spaced five seconds apart, every page cached and checksummed. That recovered €3.2bn of missing spend, plus €2,189m of loan fees across 1,617 loans that the frozen table discarded entirely. Because every row on those pages is labelled, loans, free transfers and undisclosed fees are read rather than inferred.
+
+<Callout type="validation" title="How the fee pull was checked">
+  The largest parsed fees (Neymar €222m, Mbappé €180m, Dembélé €148m, Coutinho €135m) are correct. Season totals show the COVID dip (€3.8bn in 2020/21 against €5.5–6.8bn either side), and four independently spot-checked club-seasons reproduce to the euro.
+</Callout>
+
+### Entity matching on identifiers, never names
+
+Names change inside a single source: in the FBref snapshot, Borussia Mönchengladbach is "M'Gladbach" for six seasons and "Gladbach" for the seventh. Every join therefore uses stable identifiers: FBref's eight-character team and player IDs, a hand-reviewed one-to-one mapping of the 145 clubs between FBref and Transfermarkt, and a statistical fingerprint crosswalk for the Kaggle data, which has no IDs at all. That crosswalk matched 99.5–99.9% of minutes in every season.
+
+Verification caught real errors before they reached a chart. Matching clubs by name similarity alone produced three wrong pairings, among them Roma mapped to Parma and Rennes to Nantes; checking which club a club's own players actually played for exposed all three. Wherever a judgement call was needed, it lives in a review ledger beside the table it affects, recording who decided, when and why. The warehouse records 108 such decisions.
+
+### The warehouse
+
+The data loads into a PostgreSQL star schema with three grains: **transfer events** for money, **player-club-seasons** for performance, and a derived **spell bridge** for attribution. The core fact is one row per transfer event, never netted and never inferred. Fees paid and received stay separable, undisclosed fees stay `NULL` rather than becoming zero, and loan returns can be classified where the evidence is.
+
+The loaded warehouse holds 684 club-seasons, 19,562 player-seasons, 34,726 transfers and 213,973 valuations.
+
+## The pipeline and the tools
+
+<DataPipeline
+  caption="Each stage, and the tool that does it, as documented in the repository."
+  steps={[
+    { label: 'Acquire & freeze', icon: 'ingest', detail: 'Fetch, freeze and checksum sources; build reference tables; run rule-based consistency checks', tools: ['Python'] },
+    { label: 'Warehouse', icon: 'database', detail: 'Star schema at transfer-event grain; 47 warehouse checks', tools: ['PostgreSQL'] },
+    { label: 'Score', icon: 'sigma', detail: 'Player quality, four pillars and the composite index', tools: ['R'] },
+    { label: 'Verify', icon: 'code', detail: 'Every R result recomputed independently in SQL', tools: ['SQL'] },
+    { label: 'Present', icon: 'chart', detail: 'Six presentation views; the Power BI report and its web rebuild', tools: ['Power BI', 'Astro', 'ECharts'] },
+  ]}
+/>
+
+The division of labour is deliberate. **Python** handles everything that touches the outside world: fetching, freezing and checksumming sources, building the reference and mapping tables, loading the warehouse, and later exporting the web snapshot. **PostgreSQL** holds the warehouse, the business rules applied once in six presentation views, and a full set of independent checks. **R** does the scoring. **Power BI** is the original report, and **Astro with ECharts** is its static web rebuild.
+
+Every R script writes its results and then recomputes each value independently in SQL, failing if the two disagree by more than 10⁻⁹. Where R fits a regression with dummy variables, the SQL check solves the same model a different way, by alternating projections, so agreement means more than shared code. Several checks were confirmed to fail on deliberately planted errors.
+
+| Layer | Checks |
+|---|---:|
+| Warehouse | 47 |
+| Player quality, then Pillars 4, 1, 2, 3 and the composite | 20, 9, 32, 26, 22, 14 |
+| Presentation views | 40 |
+| Web export | 20 |
+| Web client arithmetic, tested against SQL | 22 |
+
+## Measuring players first
+
+Every player-season is scored on per-90 output against its own position group and season. The six groups come from Transfermarkt's detailed positions, with FBref's season position overriding where the two disagree. Each metric is standardised within season and position group, and the player's quality is the mean of those standard scores, re-standardised so that zero is the group average:
+
+<Formula label="Standard score within season and position group" tex="z_{i,m} = \frac{x_{i,m} - \mu_{g,s,m}}{\sigma_{g,s,m}}">
+  *x* is player *i*'s per-90 value on metric *m*; μ and σ are the mean and standard deviation for position group *g* in season *s*, over scored rows only.
+</Formula>
+
+A 900-minute floor applies, because below it a per-90 rate is noise, and missing inputs are treated as gaps, never zeros. Centre-backs needed one extra step: their tackles, interceptions, clearances and aerial duels depend on how much their team defends, so each of those four stats is regressed on team possession within the season and the residual is scored.
+
+<TechnicalNote title="Rejected alternative: the full possession adjustment">
+  A StatsBomb-style adjustment, scaling defensive actions up for teams that have the ball, fixed the famous names but made centre-back quality track team possession at r = 0.75. That swaps one club-size effect for another and would have fed straight into recruitment scores, flattering big clubs' centre-back signings by construction. The residual approach removes only what possession explains, leaving a correlation of 0.23. It is still imperfect: centre-backs remain the worst-measured group, and elite centre-backs at dominant clubs still rank mid-table.
+</TechnicalNote>
+
+## The four-pillar efficiency model
+
+Efficiency is computed per club per season, from four pillars. Each is a club-season z-score, and each money pillar is normalised for club size by residual rather than by division.
+
+| Pillar | What it measures | Weight |
+|---|---|---:|
+| **Recruitment ROI** | Output delivered by signings per deflated euro of fee, over three seasons | 0.30 |
+| **Trading profit** | Realised: sale price against the player's market value when the club acquired him | 0.30 |
+| **Squad value growth** | Unrealised: value gained by players still held, net of value written off when players leave for nothing | 0.30 |
+| **Sporting return** | League points per match, standardised within league-season | 0.10 |
+
+Realised and unrealised value are kept strictly apart, so nothing is counted twice.
+
+### Recruitment ROI
+
+A signing's output is its playing time weighted by quality, credited for the signing season plus two more. Playing time is measured in season-equivalents, so 34- and 38-match leagues compare, and quality is the player's percentile within his group:
+
+<Formula label="Output credited to a signing, per season" tex="\text{output} = \frac{\text{minutes}}{90 \times \text{league matches}} \times \frac{\text{quality percentile}}{100}" />
+
+Spend is disclosed permanent and loan fees, each deflated by dividing by that season's median permanent fee. Return is then log-transformed:
+
+<Formula label="Log recruitment return" tex="\log \mathrm{ROI}_{c,s} = \log\left(\text{output}_{c,s} + 0.1\right) - \log\left(\text{spend}_{c,s}\right)">
+  The 0.1 offset keeps a cohort with no output finite; changing it to 0.5 moves club ranks by only ρ = 0.98. Club-seasons below the 10th percentile of spend (about €5.7m) are labelled "insufficient spend" and not scored: 69 of 684.
+</Formula>
+
+### Normalising for club size
+
+All three money pillars are normalised the same way. The raw measure is regressed on log squad value at season start, with season and league effects, and the standardised residual is the score:
+
+<Formula label="Residual normalisation" tex="y_{c,s} = \beta \log V_{c,s} + \alpha_{s} + \gamma_{\ell} + \varepsilon_{c,s} \qquad z_{c,s} = \frac{\varepsilon_{c,s}}{\operatorname{sd}(\varepsilon)}">
+  *V* is squad value on 1 July of season *s*, standing in for revenue; α is the season effect and γ the league effect. The score is performance relative to what a club of that size, in that league and season, would be expected to achieve.
+</Formula>
+
+League effects matter. With season effects alone, 11 of the bottom 12 recruitment scores were Premier League clubs: squad value does not capture Premier League broadcast money, so the index was partly measuring "is this club English". With league effects, each club is judged against its own league. The league effect itself is published as a finding rather than thrown away.
+
+### Trading profit and squad value growth
+
+**Trading profit** compares each sale's price with the player's market value when the club acquired him. Players already at a club when the window opened are priced as if acquired at market value on 1 July 2017, which avoids relying on incomplete pre-2017 transfer data. Profit is expressed in that season's median fees and winsorised at the 1st and 99th percentiles of club-seasons (−9.8 to +24.7 median fees) before normalisation.
+
+**Squad value growth** marks every player a club still holds to market each season, using ownership rebuilt from transfer events, because the valuations' own club field agrees with real ownership for only 73.4% of valuations. A free departure writes the remaining value off to zero. Across the window, 2,378 players left for nothing, taking €6.6bn of value with them. It is winsorised at −28.5 to +30.0 median fees, then normalised the same way.
+
+**Sporting return** is league points per match from results, standardised within each league-season. Per-match rather than total points keeps 34- and 38-match seasons comparable, and results rather than official points keep administrative deductions out of a measure of what happened on the pitch.
+
+### The composite index
+
+<Formula label="Efficiency index, per club-season" tex="E_{c,s} = \frac{\sum_{k} w_k \, z_{k,c,s}}{\sum_{k} w_k} \qquad w_{\text{recruit}} = w_{\text{trade}} = w_{\text{growth}} = 0.30, \; w_{\text{sport}} = 0.10">
+  The sums run over the pillars a club-season actually has, so the 69 club-seasons below the recruitment spend floor are scored on the remaining three with weight 0.70, rather than treating a missing score as zero.
+</Formula>
+
+For display, the index is also rescaled linearly onto 0–100, using the minimum (−3.38) and maximum (+4.95) across all 684 club-seasons. A linear rescale was chosen over a percentile rank because averaging percentiles across seasons reordered clubs, affecting 307 of 4,465 club pairs; an affine rescale preserves order at every level of aggregation.
+
+<Callout type="note" title="Provisional seasons">
+  Recruitment ROI credits three seasons of output, so the 2022/23 and 2023/24 signing cohorts run past the end of the window. Those 194 club-seasons are flagged as provisional, and any trend should be read with that in mind.
+</Callout>
+
+## Why the weights are chosen, not derived
+
+The original plan was to derive the weights from the data: regress sporting success on the pillars and let the coefficients decide. Built and measured, that approach failed in three ways.
+
+1. **Wrong signs.** Trading profit took a negative coefficient against every success target tried, and at club level so did recruitment ROI. Derived weights would have *subtracted* good recruitment and good trading from an efficiency index.
+2. **Almost no signal.** Regressing the three money pillars on each target gave an R² between 0.006 and 0.129.
+3. **Instability.** Leaving one season out moved the coefficients as much as the coefficients themselves.
+
+| Target | R² |
+|---|---:|
+| Points per match (z within league-season) | 0.044 |
+| Points above squad-value expectation | 0.129 |
+| Won a trophy | 0.016 |
+| Next season's points | 0.006 |
+
+This is structural rather than a poor choice of target. Every pillar is residualised against squad value by design, while league points correlate 0.67 with squad value, so efficiency and success are partly opposed, and no regression of one on the other can produce sensible weights. Clipping negative coefficients to zero would "fix" the signs but put 0.81 of the weight on value growth alone.
+
+The index therefore uses equal weights on the three money pillars, which are near-independent (|r| ≤ 0.20) and already standardised, and a small 0.10 on sporting return: the smallest weight that stops "efficient" from meaning cheap and bad.
+
+| Weight on sporting return | Rank correlation with money-only | Average points z of the top 10 | Top 3 |
+|---:|---:|---:|---|
+| 0.00 | 1.00 | +0.23 | Lille, Brighton, Real Sociedad |
+| **0.10** | **0.96** | **+0.72** | **Lille, Atalanta, Manchester City** |
+| 0.25 | 0.70 | +1.20 | Manchester City, Lille, Atalanta |
+| 0.50 | 0.24 | +1.58 | Manchester City, Liverpool, Real Madrid |
+
+At 0.25 and above the index turns into a quality ranking. At 0.10 it remains an efficiency index, and FC Empoli, the one cheap-and-bad club in the money-only top ten, drops out.
+
+## What the data shows
+
+### The most and least efficient clubs
+
+Averaged across the window, on the composite index (a z-score) and the same number on the 0–100 display scale:
+
+| Club | Index | Score | Recruitment | Trading | Value growth | Points |
+|---|---:|---:|---:|---:|---:|---:|
+| LOSC Lille | +1.45 | 58.0 | +0.02 | +1.75 | +0.57 | +0.75 |
+| Atalanta | +1.13 | 54.1 | −0.14 | +1.12 | +0.75 | +0.84 |
+| Manchester City | +1.11 | 53.9 | +0.26 | +0.20 | +0.85 | +2.02 |
+| Real Sociedad | +0.97 | 52.2 | +0.76 | −0.24 | +1.16 | +0.40 |
+| Brighton | +0.95 | 52.0 | +0.14 | +1.07 | +0.60 | −0.37 |
+
+The least efficient were Schalke (−0.84), Manchester United (−0.81), Juventus (−0.78), PSG (−0.73) and Marseille (−0.65).
+
+The top clubs get there very differently: Lille and Brighton mainly through trading, Real Sociedad through recruitment and value growth, Manchester City through value growth and results. Meanwhile PSG and Barcelona sit near the bottom despite ranking near the top of Europe on points (+2.17 and +1.92). That is the point of an efficiency index: it measures what a club got for its money, not how good it was. Across all club-seasons, the index correlates 0.32 with league points and 0.13 with squad value, so it is neither a disguised league table nor a disguised rich list.
+
+<FindingGrid>
+  <FindingCard title="The Premier League pays roughly 2.4× for the same output" metric="0.42×" metricLabel="Output per euro vs Bundesliga">
+    At the same squad value and season, Premier League clubs get 0.42× the signing output per deflated euro that Bundesliga clubs get. The raw medians agree: 0.11 output per deflated euro in England against 0.32–0.53 elsewhere.
+  </FindingCard>
+  <FindingCard title="Ligue 1 is the selling league" metric="+1.89" metricLabel="Median fees vs Bundesliga">
+    Ligue 1 clubs realise the most trading profit for their size: +1.89 median fees more per club-season than comparable Bundesliga clubs. The Premier League is last, at −0.55.
+  </FindingCard>
+  <FindingCard title="Selling well goes with fewer points" metric="−0.20" metricLabel="Trading vs trophies, club level">
+    Trading profit is negatively related to every measure of sporting success tried: −0.10 against points and −0.20 against trophies at club level.
+  </FindingCard>
+</FindingGrid>
+
+### League effects
+
+Both league effects are estimated at the same squad value and season, relative to the Bundesliga.
+
+| League | Recruitment output per euro | Trading profit (median fees per club-season) |
+|---|---:|---:|
+| Ligue 1 | 1.08 | +1.89 |
+| La Liga | 1.02 | −0.26 |
+| Bundesliga | 1.00 | 0 |
+| Serie A | 0.79 | +0.95 |
+| Premier League | 0.42 | −0.55 |
+
+Read together, France buys low and sells high; England does the reverse.
+
+<Callout type="limitation" title="Associations, not causes">
+  These results describe relationships in seven seasons of observational data. The negative link between trading profit and sporting success is consistent with a plausible mechanism, since selling your best players at a profit is close to the same act as weakening the squad in the short term. But the analysis does not establish that selling causes clubs to lose points, and the correlations involved are small. Clubs that realise the most value, including Lille, Leipzig, Atalanta, Brighton and Dortmund, often pair strong trading with fewer points, which is exactly why the index keeps four pillars instead of collapsing into one.
+</Callout>
+
+### Who got smarter
+
+Comparing each club's first three seasons with its later ones, using complete signing cohorts only, Udinese, Arsenal, Köln, Real Madrid, Brighton and Stuttgart improved most, while Juventus, Barcelona, Lyon, Atlético, Leicester and Bayern declined most. Because the provisional cohorts are excluded, the "later" era is thin, in places a single season, so the trend is best read season by season in the dashboard rather than as a two-era summary. Brighton's recruitment scores by cohort show the kind of arc the question is about: −0.93 in 2017/18, then −0.36, +0.78 and +0.68, before −0.25 and provisional scores of +0.88 and +0.19.
+
+## The dashboard
+
+The findings are published as a two-page dashboard, designed so that the league-wide answer and the evidence behind any single club are one click apart.
+
+**The league overview** plots every club's transfer spend against points per match on a log axis, split into quadrants at the median ("Buying Success", "Smart Spenders", "Poor but Frugal" and "Burning Money"). Alongside it are headline KPIs, a donut of spend by league and the best and worst clubs by spend efficiency. Season and league filters update every chart.
+
+**The club page** narrows the view to one club. It brings together the club's squad and market values, its largest transfers, a spending breakdown, its efficiency score and the four pillars behind it, its honours, and a season-by-season chart of fees paid and received against the efficiency index, banded by manager tenure.
 
 <Figure
   src={clubBreakdown}
-  alt="Club detail page of the Transfer Market Efficiency Power BI dashboard, filtered to Real Madrid. It shows total spend, sales, net spend and ROI cards, a current squad table with market values, a table of the largest transfers, the club efficiency score with its pillar values and rank, a spending breakdown donut, league and cup titles, and a chart of annual transfer cash flow and efficiency across manager tenures."
-  caption="The club detail page of the Power BI dashboard, shown here filtered to Real Madrid using the club selector."
+  alt="Club detail page of the original Transfer Market Efficiency Power BI report, filtered to Real Madrid. It shows total spend, sales, net spend and ROI cards, a current squad table with market values, a table of the largest transfers, the club efficiency score with its pillar values and rank, a spending breakdown donut, league and cup titles, and a chart of annual transfer cash flow and efficiency across manager tenures."
+  caption="The club page of the original Power BI report, filtered to Real Madrid. The same page is available for every club in the interactive dashboard."
 />
 
-<PlaceholderNote label="Placeholder" title="Long-form case study — coming soon">
-  The complete write-up will cover the data sources and their validation, position-adjusted player scoring, how the efficiency index is built, the findings, and the project's limitations. Until then, the full code and documentation are available on GitHub.
-</PlaceholderNote>
+### The original Power BI report and the web rebuild
+
+The dashboard was built in Power BI, reading the six presentation views from the PostgreSQL warehouse. Because the Power BI licence is an educational account without public publishing access, the live dashboard is a static rebuild of the same two pages in Astro and ECharts: the warehouse views are exported to JSON and committed, so the site runs with no backend and no sign-in. Its numbers are tested against SQL, not against Power BI: 20 checks decode the published JSON and compare it row by row with the views, and 22 tests hold the browser's own arithmetic to values computed in the warehouse.
+
+The rebuild keeps the same two pages, filters and charts, with two documented differences, both deliberate.
+
+- **The median KPI.** The web dashboard shows the median 0–100 efficiency score across clubs, which is 39.2 over the full window. Power BI shows the median raw index across club-seasons, which is −0.03. They differ in scale and in grain: the median across club means is −0.1167 on the index scale, which is exactly 39.17 once rescaled.
+- **The scatter plot.** The web version plots one point per club, aggregated over the selected seasons. Power BI plots one point per club-season.
+
+Small visual and interaction differences also exist between the two, so the screenshots on this page show the Power BI original and the live site shows the web rebuild. The full reconciliation is in the [web dashboard README](https://github.com/tbrunsting/Transfer-Market-Efficiency/blob/main/web/README.md#why-this-pages-median-differs-from-the-power-bi-card).
+
+<Callout type="note" title="Opening the original .pbix">
+  Dashboard.pbix opens in Power BI Desktop, which runs on Windows. It connects to a local PostgreSQL warehouse, so opening it shows the data saved in the file, but refreshing it requires rebuilding that warehouse from the repository and configuring your own local data source and credentials. The repository README describes the full rebuild.
+</Callout>
+
+<ResourceLinks
+  title="See it for yourself"
+  items={[
+    { kind: 'dashboard', label: 'Explore the interactive dashboard', href: 'https://tbrunsting.github.io/Transfer-Market-Efficiency/', detail: 'Filter by season and league, then open any club.' },
+    { kind: 'download', label: 'Download the Power BI original', href: 'https://github.com/tbrunsting/Transfer-Market-Efficiency/raw/main/Dashboard.pbix', detail: 'Dashboard.pbix, 4.8 MB. Requires Power BI Desktop.' },
+  ]}
+/>
+
+## Limitations
+
+- **Undisclosed fees are excluded, never estimated.** 1,696 of the arrivals the scoring covers have no fee (2,988 across all 145 clubs, counting seasons they spent outside the big five). This understates spend most for the clubs that disclose least, flattering their efficiency.
+- **Wages are excluded.** The analysis uses transfer fees only, so a club with modest fees and an enormous wage bill looks better than it is.
+- **Centre-backs are the worst-measured group.** Public event data records what a defender does, not what he prevents.
+- **The valuations' club field is unreliable**, agreeing with real ownership 73% of the time, so ownership is rebuilt from transfer events wherever it matters.
+- **Squad value growth is thinner in early seasons** by construction: 92% of 2018/19's value growth belongs to players since sold, whose value appears in trading profit instead.
+- **2022/23 and 2023/24 are provisional**, because recruitment ROI credits three seasons of output and the window ends.
+- **It is a historical, frozen snapshot.** Transfers after 2023/24 are not included, and the dashboard shows the data as last exported, not a live feed.
+
+## Future work
+
+The repository records a revisit criterion for each limitation, rather than a wish list. The most direct extensions are:
+
+- **Adding the recency layer.** Transfers from 2024/25 onward were deferred. They could be fetched from the same club pages and shown on the club page, flagged as unscored.
+- **Extending the scored window.** Sports Reference has said some advanced data may return "at a dramatically smaller scale". Any data that does return would first have to match the frozen snapshot where the two overlap.
+- **Improving the web dashboard.** Deep links to a filtered league overview, and a full screen-reader table of the plotted clubs, are both documented as next steps.
+
+An interesting wrong answer that is honestly documented is worth more than a clean answer that quietly hides its assumptions. Where the project's own plan did not survive contact with the data, as with the derived weights, the documentation says so.

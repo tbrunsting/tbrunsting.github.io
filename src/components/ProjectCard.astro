@@ -17,7 +17,7 @@ interface Props {
 }
 
 const { project, headingLevel: Heading = 'h3', variant = 'stacked' } = Astro.props;
-const { title, sport, timePeriod, summary, tools, status } = project.data;
+const { title, sport, timePeriod, summary, tools, status, dashboard } = project.data;
 const href = projectUrl(project);
 const sizes = variant === 'wide' ? '(min-width: 48rem) 22rem, 100vw' : '(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw';
 ---
@@ -33,7 +33,7 @@ const sizes = variant === 'wide' ? '(min-width: 48rem) 22rem, 100vw' : '(min-wid
         <span aria-hidden="true">·</span>
         {timePeriod}
       </p>
-      {status !== 'published' && <span class="badge badge--accent project-card__status">{statusLabel[status]}</span>}
+      <span class="badge badge--accent project-card__status">{statusLabel[status]}</span>
     </div>
     <Heading class="project-card__title">
       <a href={href}>{title}</a>
@@ -41,10 +41,21 @@ const sizes = variant === 'wide' ? '(min-width: 48rem) 22rem, 100vw' : '(min-wid
     <p class="project-card__summary">{summary}</p>
     <div class="project-card__bottom">
       <ToolList tools={tools} size="sm" />
-      <span class="project-card__cta" aria-hidden="true">
-        <span class="project-card__cta-text">View Project</span>
-        <Icon name="arrow-right" />
-      </span>
+      <div class="project-card__links">
+        {
+          dashboard.url && (
+            <a class="project-card__extra" href={dashboard.url} target="_blank" rel="noopener">
+              <Icon name="chart" />
+              Live dashboard
+              <span class="visually-hidden">for {title} (opens in a new tab)</span>
+            </a>
+          )
+        }
+        <span class="project-card__cta" aria-hidden="true">
+          <span class="project-card__cta-text">View Project</span>
+          <Icon name="arrow-right" />
+        </span>
+      </div>
     </div>
   </div>
 </article>
@@ -154,6 +165,42 @@ const sizes = variant === 'wide' ? '(min-width: 48rem) 22rem, 100vw' : '(min-wid
     gap: var(--space-3);
     margin-top: auto;
     padding-top: var(--space-2);
+  }
+
+  .project-card__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    margin-left: auto;
+  }
+
+  /* Secondary link sits above the card's stretched link so it stays clickable. */
+  .project-card__extra {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--gray-200);
+    border-radius: 999px;
+    background: var(--white);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+    transition: border-color var(--duration) var(--ease);
+  }
+
+  .project-card__extra:hover {
+    border-color: var(--orange-text);
+    color: var(--orange-text);
+  }
+
+  .project-card__extra :global(svg) {
+    width: 0.95rem;
+    height: 0.95rem;
   }
 
   .project-card__cta {
