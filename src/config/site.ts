@@ -48,7 +48,9 @@ export const site = {
      * setting it, open the PDF and confirm it shows only the contact details you
      * want public (no outdated university email).
      */
-    pdf: null as string | null,
+    // Web version of Tyler_Brunsting_-_Analyst_Resume.docx: email updated, phone
+    // number omitted for the public copy (at Tyler's request).
+    pdf: '/resume/Tyler-Brunsting-Resume.pdf' as string | null,
     /** Optional "last updated" label, e.g. 'October 2026'. */
     updated: null as string | null,
   },

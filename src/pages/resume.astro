@@ -53,21 +53,32 @@ if (pdf) {
 }
 
 const pdfUrl = pdf ? withBase(pdf) : null;
+/** Filename offered when downloading, e.g. 'Tyler-Brunsting-Resume.pdf'. */
+const downloadName = pdf ? pdf.split('/').pop() : undefined;
 const showPending = import.meta.env.DEV;
 ---
 
-<BaseLayout title="Resume" description={`Resume of ${site.name}.`} noindex={!pdfUrl}>
-  <PageHeader eyebrow="Resume" title="Resume">
+<BaseLayout
+  title="Resume"
+  description={pdfUrl ? `Resume of ${site.name}: view online or download the PDF.` : `Resume of ${site.name}.`}
+  noindex={!pdfUrl}
+>
+  <PageHeader
+    eyebrow="Resume"
+    title="Resume"
+    lede={pdfUrl ? 'One page, as a PDF. View it in your browser or download a copy.' : undefined}
+  >
     {
       pdfUrl && (
         <div class="btn-row">
-          <a class="btn btn--primary" href={pdfUrl} download>
+          <a class="btn btn--primary" href={pdfUrl} target="_blank" rel="noopener">
+            <Icon name="file" />
+            View Resume
+            <span class="visually-hidden">(PDF, opens in a new tab)</span>
+          </a>
+          <a class="btn btn--ghost" href={pdfUrl} download={downloadName}>
             <Icon name="download" />
             Download PDF
-          </a>
-          <a class="btn btn--ghost" href={pdfUrl} target="_blank" rel="noopener">
-            <Icon name="external" />
-            Open in new tab
           </a>
         </div>
       )
@@ -79,17 +90,38 @@ const showPending = import.meta.env.DEV;
     <div class="container">
       {
         pdfUrl ? (
-          <div class="resume-viewer">
-            <object data={pdfUrl} type="application/pdf" title={`${site.name} resume (PDF)`}>
-              <p class="resume-fallback">
-                Your browser can’t display the PDF here.{' '}
-                <a href={pdfUrl} download>
-                  Download the resume
-                </a>{' '}
-                instead.
-              </p>
-            </object>
-          </div>
+          <>
+            {/* Wide screens: the resume inline. */}
+            <div class="resume-viewer">
+              <object data={pdfUrl} type="application/pdf" title={`${site.name} resume (PDF)`}>
+                <p class="resume-fallback">
+                  Your browser can’t display the PDF here.{' '}
+                  <a href={pdfUrl} download={downloadName}>
+                    Download the resume
+                  </a>{' '}
+                  instead.
+                </p>
+              </object>
+            </div>
+            {/* Phones: inline PDF viewers are unreliable, so offer clear actions instead. */}
+            <div class="resume-mobile">
+              <span class="resume-mobile__icon" aria-hidden="true">
+                <Icon name="file" />
+              </span>
+              <p class="resume-mobile__title">{site.name} — Resume</p>
+              <p class="resume-mobile__meta">PDF · one page</p>
+              <div class="btn-row resume-mobile__actions">
+                <a class="btn btn--primary" href={pdfUrl} target="_blank" rel="noopener">
+                  View Resume
+                  <span class="visually-hidden">(PDF, opens in a new tab)</span>
+                </a>
+                <a class="btn btn--ghost" href={pdfUrl} download={downloadName}>
+                  <Icon name="download" />
+                  Download PDF
+                </a>
+              </div>
+            </div>
+          </>
         ) : showPending ? (
           <div class="resume-placeholder">
             <PlaceholderNote label="Pending — dev only" title="Resume PDF not added yet">
@@ -127,13 +159,64 @@ const showPending = import.meta.env.DEV;
   .resume-viewer object {
     display: block;
     width: 100%;
-    height: min(85vh, 70rem);
+    height: min(88vh, 72rem);
   }
 
-  /* Phones rarely render inline PDFs well: rely on the download/open buttons. */
-  @media (max-width: 40rem) {
-    .resume-viewer object {
-      height: 70vh;
+  .resume-mobile {
+    display: none;
+    justify-items: start;
+    gap: var(--space-2);
+    padding: var(--space-6) var(--space-5);
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .resume-mobile__icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: var(--space-2);
+    border-radius: var(--radius);
+    background: var(--orange-soft);
+    color: var(--orange-text);
+  }
+
+  .resume-mobile__icon :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .resume-mobile__title {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 800;
+  }
+
+  .resume-mobile__meta {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
+
+  .resume-mobile__actions {
+    margin-top: var(--space-3);
+    width: 100%;
+  }
+
+  .resume-mobile__actions .btn {
+    flex: 1 1 12rem;
+  }
+
+  /* Phones and small tablets: actions instead of an embedded viewer. */
+  @media (max-width: 47.99rem) {
+    .resume-viewer {
+      display: none;
+    }
+
+    .resume-mobile {
+      display: grid;
     }
   }
 

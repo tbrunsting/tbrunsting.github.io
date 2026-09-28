@@ -123,16 +123,16 @@ neutral chart glyph.
 To change a font, install the Fontsource package (e.g. `npm i @fontsource-variable/manrope`),
 swap the `@import` at the top of `global.css`, and update `--font-display` or `--font-body`.
 
-## Personal details still to add
+## Personal details
 
-Set these in `src/config/site.ts`. Until then the public build hides them (no dead links or
-visible placeholders), and `npm run dev` shows each as a marked "pending" item.
+All set in `src/config/site.ts`: `bio` (About page), `links.linkedin`, `links.email` and
+`resume.pdf`.
 
-- `resume.pdf` — put the **current** PDF in `public/resume/`; until then `/resume/` shows a
-  short note, is marked `noindex` and is left out of the sitemap. The build refuses a PDF
-  whose text contains a university (`.edu`) email; check the file by eye as well.
-
-Done: `bio` (About page), `links.linkedin` and `links.email`.
+**Resume:** `public/resume/Tyler-Brunsting-Resume.pdf` is the web copy of
+`Tyler_Brunsting_-_Analyst_Resume.docx`, exported by Microsoft Word, with the email updated and
+the phone number omitted from the public copy. To replace it, export the new PDF, check it by eye,
+and overwrite that file (or point `resume.pdf` at a new name and delete the old one so it is not
+published). The build refuses a PDF whose text contains a university (`.edu`) email.
 
 ## Case-study table of contents
 
