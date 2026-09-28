@@ -1,19 +1,15 @@
-# Deploy to GitHub Pages — PREPARED, NOT ACTIVE.
+# Deploy the portfolio to GitHub Pages: https://tbrunsting.github.io/
 #
-# This workflow does nothing on its own:
-#   • The site has no GitHub remote, so this file never reaches GitHub until you push.
-#   • Even after pushing, it only runs when started by hand (workflow_dispatch).
-#   • GitHub Pages must also be enabled in the repository settings.
-#
-# To switch on automatic deploys later, uncomment the `push:` trigger below.
-# Step-by-step instructions: docs/DEPLOYMENT.md
+# Runs on every push to main, or by hand from the Actions tab.
+# Requires Settings → Pages → Build and deployment → Source: "GitHub Actions".
+# See docs/DEPLOYMENT.md.
 
 name: Deploy to GitHub Pages
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
-  # push:
-  #   branches: [main]
 
 permissions:
   contents: read
@@ -36,13 +32,11 @@ jobs:
         with:
           node-version: 24
         env:
-          # Optional repository *variables* (Settings → Secrets and variables → Actions → Variables).
-          # Without them the defaults below are correct for GitHub Pages:
-          #   • repo named <owner>.github.io  → https://<owner>.github.io/        (base '/')
-          #   • any other repo name           → https://<owner>.github.io/<repo>/ (base '/<repo>')
-          # Set SITE_URL (and BASE_PATH '/') only once a custom domain is owned and configured.
-          SITE_URL: ${{ vars.SITE_URL || format('https://{0}.github.io', github.repository_owner) }}
-          BASE_PATH: ${{ vars.BASE_PATH || (github.event.repository.name == format('{0}.github.io', github.repository_owner) && '/' || format('/{0}', github.event.repository.name)) }}
+          # User site served from the root. Override with repository variables
+          # (Settings → Secrets and variables → Actions → Variables) only for a
+          # future custom domain.
+          SITE_URL: ${{ vars.SITE_URL || 'https://tbrunsting.github.io' }}
+          BASE_PATH: ${{ vars.BASE_PATH || '/' }}
 
   deploy:
     needs: build

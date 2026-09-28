@@ -1,8 +1,8 @@
 # tbrunsting-site — Sports analytics portfolio
 
-A static Astro site for long-form sports analytics projects. The site is
-launch-ready but not yet deployed; see [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)
-for the publishing steps.
+A static Astro site for long-form sports analytics projects, published at
+**https://tbrunsting.github.io/** via GitHub Pages. Pushing to `main` deploys;
+see [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 ## Everyday commands
 
@@ -128,12 +128,11 @@ swap the `@import` at the top of `global.css`, and update `--font-display` or `-
 Set these in `src/config/site.ts`. Until then the public build hides them (no dead links or
 visible placeholders), and `npm run dev` shows each as a marked "pending" item.
 
-- `links.email` — the public email address for the Contact page, About page and footer
 - `resume.pdf` — put the **current** PDF in `public/resume/`; until then `/resume/` shows a
   short note, is marked `noindex` and is left out of the sitemap. The build refuses a PDF
   whose text contains a university (`.edu`) email; check the file by eye as well.
 
-Done: `bio` (About page) and `links.linkedin`.
+Done: `bio` (About page), `links.linkedin` and `links.email`.
 
 ## Case-study table of contents
 

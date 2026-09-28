@@ -37,8 +37,8 @@ export const site = {
     github: 'https://github.com/tbrunsting' as string | null,
     /** Verified by Tyler. */
     linkedin: 'https://www.linkedin.com/in/tyler-brunsting/' as string | null,
-    /** Not provided yet: the address you want shown publicly (no "mailto:"). */
-    email: null as string | null,
+    /** Public contact address, provided by Tyler (no "mailto:"). */
+    email: 'tylerbrunsting60@gmail.com' as string | null,
   },
 
   resume: {

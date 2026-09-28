@@ -5,18 +5,17 @@ import sitemap from '@astrojs/sitemap';
 import { site as siteConfig } from './src/config/site.ts';
 
 /**
- * Site URL and base path are read from environment variables so that:
- *  - local development never depends on a live domain, and
- *  - the eventual deployment can set the real URL without code changes.
+ * The site is published as the GitHub user site https://tbrunsting.github.io/
+ * (repository tbrunsting/tbrunsting.github.io), served from the root.
+ * Local development works without the domain; these values only shape
+ * canonical URLs, share-image URLs, robots.txt and the sitemap.
  *
- * SITE_URL  — the public origin, e.g. https://tbrunsting.com (intended, not yet configured)
- * BASE_PATH — only needed when serving from a sub-path such as
- *             https://<user>.github.io/<repo>/ (leave unset for a custom domain)
- *
- * See docs/DEPLOYMENT.md.
+ * Environment overrides (e.g. for a future custom domain; see docs/DEPLOYMENT.md):
+ * SITE_URL  — the public origin
+ * BASE_PATH — only for serving from a sub-path
  */
-const SITE_URL = process.env.SITE_URL ?? 'http://localhost:4321';
-const BASE_PATH = process.env.BASE_PATH ?? '/';
+const SITE_URL = process.env.SITE_URL || 'https://tbrunsting.github.io';
+const BASE_PATH = process.env.BASE_PATH || '/';
 
 export default defineConfig({
   site: SITE_URL,

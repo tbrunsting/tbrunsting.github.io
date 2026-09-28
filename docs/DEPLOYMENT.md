@@ -1,9 +1,14 @@
 # Deployment guide
 
-The site is launch-ready but **not deployed**. It has no GitHub remote, nothing
-has been pushed, GitHub Pages is not enabled, and no domain is configured.
-`tbrunsting.com` is only the *intended* future domain; it has not been
-purchased or connected.
+**Current setup:** the site is published from the repository
+[`tbrunsting/tbrunsting.github.io`](https://github.com/tbrunsting/tbrunsting.github.io)
+to **https://tbrunsting.github.io/** by `.github/workflows/deploy.yml`, which runs
+on every push to `main`. Pages uses **Settings → Pages → Source: GitHub Actions**.
+No custom domain is configured; `tbrunsting.com` is only a possible future domain.
+
+To publish a change: commit it and `git push`. The Actions tab shows each deploy.
+
+The steps below record how it was set up, for reference.
 
 The Transfer Market Efficiency dashboard is a **separate** site, deployed from
 the analytics repository at `https://tbrunsting.github.io/Transfer-Market-Efficiency/`.
